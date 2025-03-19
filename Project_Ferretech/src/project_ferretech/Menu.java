@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package project_ferretech;
 
 import java.sql.*;
@@ -44,7 +40,12 @@ public class Menu extends javax.swing.JFrame {
         CrearCategoria = new javax.swing.JButton();
         EditarCategoria = new javax.swing.JButton();
         BorrarCategoria = new javax.swing.JButton();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaCompras = new javax.swing.JTable();
+        CrearCompra = new javax.swing.JButton();
+        EditarCompra = new javax.swing.JButton();
+        EliminarCompra = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -77,8 +78,9 @@ public class Menu extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
-                .addGap(28, 28, 28)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BorrarCategoria, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -91,20 +93,76 @@ public class Menu extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 12, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(CrearCategoria)
-                .addGap(18, 18, 18)
-                .addComponent(EditarCategoria)
-                .addGap(18, 18, 18)
-                .addComponent(BorrarCategoria)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(CrearCategoria)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarCategoria)
+                        .addGap(18, 18, 18)
+                        .addComponent(BorrarCategoria)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
-        jTabbedPane1.addTab("tab1", jPanel1);
-        jTabbedPane1.addTab("tab2", jTabbedPane2);
+        jTabbedPane1.addTab("Categorias", jPanel1);
+
+        tablaCompras.setModel(ComprasDAO.obtenerCompras());
+        jScrollPane2.setViewportView(tablaCompras);
+
+        CrearCompra.setText("Crear");
+        CrearCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearCompraActionPerformed(evt);
+            }
+        });
+
+        EditarCompra.setText("Editar");
+        EditarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarCompraActionPerformed(evt);
+            }
+        });
+
+        EliminarCompra.setText("Eliminar");
+        EliminarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarCompraActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EditarCompra)
+                    .addComponent(EliminarCompra)
+                    .addComponent(CrearCompra))
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(CrearCompra)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarCompra)
+                        .addGap(18, 18, 18)
+                        .addComponent(EliminarCompra)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Compras", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,8 +189,7 @@ public class Menu extends javax.swing.JFrame {
 
         int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection();
-                CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();
@@ -188,6 +245,97 @@ public class Menu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_CrearCategoriaActionPerformed
 
+    private void CrearCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCompraActionPerformed
+        int idProveedor;
+        double total;
+        String fechaCompra;
+
+        try {
+            idProveedor = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del proveedor:"));
+            fechaCompra = JOptionPane.showInputDialog("Ingrese la fecha de compra (YYYY-MM-DD):");
+            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el total de la compra:"));
+
+            if (fechaCompra != null && !fechaCompra.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_COMPRA(?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, obtenerNuevoID());
+                    stmt.setInt(2, idProveedor);
+                    stmt.setDate(3, Date.valueOf(fechaCompra));
+                    stmt.setDouble(4, total);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Compra creada.");
+                    tablaCompras.setModel(ComprasDAO.obtenerCompras());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_CrearCompraActionPerformed
+
+    private void EditarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCompraActionPerformed
+        int fila = tablaCompras.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una compra.");
+            return;
+        }
+
+        int id = (int) tablaCompras.getValueAt(fila, 0);
+        int idProveedor;
+        double total;
+        String fechaCompra;
+
+        try {
+            idProveedor = Integer.parseInt(JOptionPane.showInputDialog("Nuevo ID del proveedor:", tablaCompras.getValueAt(fila, 1)));
+            fechaCompra = JOptionPane.showInputDialog("Nueva fecha de compra (YYYY-MM-DD):", tablaCompras.getValueAt(fila, 2));
+            total = Double.parseDouble(JOptionPane.showInputDialog("Nuevo total de la compra:", tablaCompras.getValueAt(fila, 3)));
+
+            if (fechaCompra != null && !fechaCompra.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_COMPRA(?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, id);
+                    stmt.setInt(2, idProveedor);
+                    stmt.setDate(3, Date.valueOf(fechaCompra));
+                    stmt.setDouble(4, total);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Compra actualizada.");
+                    tablaCompras.setModel(ComprasDAO.obtenerCompras());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_EditarCompraActionPerformed
+
+    private void EliminarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarCompraActionPerformed
+        int fila = tablaCompras.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una compra.");
+            return;
+        }
+
+        int id = (int) tablaCompras.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta compra?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_COMPRA(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Compra eliminada.");
+                tablaCompras.setModel(ComprasDAO.obtenerCompras());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_EliminarCompraActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -227,11 +375,16 @@ public class Menu extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BorrarCategoria;
     private javax.swing.JButton CrearCategoria;
+    private javax.swing.JButton CrearCompra;
     private javax.swing.JButton EditarCategoria;
+    private javax.swing.JButton EditarCompra;
+    private javax.swing.JButton EliminarCompra;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTable tablaCategorias;
+    private javax.swing.JTable tablaCompras;
     // End of variables declaration//GEN-END:variables
 }
