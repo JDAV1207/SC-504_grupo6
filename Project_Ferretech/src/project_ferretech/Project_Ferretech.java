@@ -14,7 +14,7 @@ public class Project_Ferretech {
             public void run() {
                 try {
                     // Crear y mostrar el JFrame principal
-                    new Categorias().setVisible(true);
+                    new Menu().setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

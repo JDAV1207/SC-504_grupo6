@@ -8,9 +8,9 @@ import java.sql.*;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 
-public class Categorias extends javax.swing.JFrame {
+public class Menu extends javax.swing.JFrame {
 
-    public Categorias() {
+    public Menu() {
         initComponents();
 
     }
@@ -44,6 +44,7 @@ public class Categorias extends javax.swing.JFrame {
         CrearCategoria = new javax.swing.JButton();
         EditarCategoria = new javax.swing.JButton();
         BorrarCategoria = new javax.swing.JButton();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -103,6 +104,7 @@ public class Categorias extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("tab1", jPanel1);
+        jTabbedPane1.addTab("tab2", jTabbedPane2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -118,23 +120,30 @@ public class Categorias extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void CrearCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCategoriaActionPerformed
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la categoría:");
+    private void BorrarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarCategoriaActionPerformed
+        int fila = tablaCategorias.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una categoría.");
+            return;
+        }
 
-        if (nombre != null && !nombre.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CATEGORIA(?,?)}")) {
+        int id = (int) tablaCategorias.getValueAt(fila, 0);
 
-                stmt.setInt(1, obtenerNuevoID());
-                stmt.setString(2, nombre);
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection();
+                CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
+
+                stmt.setInt(1, id);
                 stmt.execute();
 
-                JOptionPane.showMessageDialog(this, "Categoría creada.");
+                JOptionPane.showMessageDialog(this, "Categoría eliminada.");
                 tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_CrearCategoriaActionPerformed
+    }//GEN-LAST:event_BorrarCategoriaActionPerformed
 
     private void EditarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCategoriaActionPerformed
         int fila = tablaCategorias.getSelectedRow();
@@ -161,30 +170,23 @@ public class Categorias extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_EditarCategoriaActionPerformed
 
-    private void BorrarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarCategoriaActionPerformed
-int fila = tablaCategorias.getSelectedRow();
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(this, "Seleccione una categoría.");
-        return;
-    }
+    private void CrearCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCategoriaActionPerformed
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la categoría:");
 
-    int id = (int) tablaCategorias.getValueAt(fila, 0);
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CATEGORIA(?,?)}")) {
 
-    int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
-    if (confirm == JOptionPane.YES_OPTION) {
-        try (Connection con = ConexionOracle.getConnection();
-             CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
+                stmt.setInt(1, obtenerNuevoID());
+                stmt.setString(2, nombre);
+                stmt.execute();
 
-            stmt.setInt(1, id);
-            stmt.execute();
-
-            JOptionPane.showMessageDialog(this, "Categoría eliminada.");
-            tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-        } catch (SQLException e) {
-            e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Categoría creada.");
+                tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-    }
-    }//GEN-LAST:event_BorrarCategoriaActionPerformed
+    }//GEN-LAST:event_CrearCategoriaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -203,20 +205,21 @@ int fila = tablaCategorias.getSelectedRow();
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Categorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Categorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Categorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Categorias.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Categorias().setVisible(true);
+                new Menu().setVisible(true);
             }
         });
     }
@@ -228,6 +231,7 @@ int fila = tablaCategorias.getSelectedRow();
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTable tablaCategorias;
     // End of variables declaration//GEN-END:variables
 }
