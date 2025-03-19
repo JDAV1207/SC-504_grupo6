@@ -1,0 +1,75 @@
+-- Tabla Proveedores
+CREATE TABLE Proveedores (
+    id_proveedor NUMBER PRIMARY KEY,
+    nombre VARCHAR2(255),
+    telefono VARCHAR2(50),
+    direccion VARCHAR2(255),
+    correo VARCHAR2(255)
+);
+
+-- Tabla Empleados
+CREATE TABLE Empleados (
+    id_empleado NUMBER PRIMARY KEY,
+    nombre VARCHAR2(255),
+    cargo VARCHAR2(255),
+    telefono VARCHAR2(50),
+    correo VARCHAR2(255)
+);
+
+-- Tabla Categorias
+CREATE TABLE Categorias (
+    id_categoria NUMBER PRIMARY KEY,
+    nombre_categoria VARCHAR2(255)
+);
+
+-- Tabla Productos
+CREATE TABLE Productos (
+    id_producto NUMBER PRIMARY KEY,
+    nombre VARCHAR2(255),
+    descripcion VARCHAR2(255),
+    precio NUMBER(10,2),
+    stock NUMBER,
+    id_categoria NUMBER,
+    CONSTRAINT fk_productos_categoria FOREIGN KEY (id_categoria) 
+    REFERENCES Categorias(id_categoria)
+);
+
+-- Tabla Clientes
+CREATE TABLE Clientes (
+    id_cliente NUMBER PRIMARY KEY,
+    nombre VARCHAR2(255),
+    telefono VARCHAR2(50),
+    direccion VARCHAR2(255),
+    correo VARCHAR2(255)
+);
+
+-- Tabla Ventas
+CREATE TABLE Ventas (
+    id_venta NUMBER PRIMARY KEY,
+    id_cliente NUMBER,
+    id_empleado NUMBER,
+    fecha_venta DATE,
+    total NUMBER(10,2),
+    CONSTRAINT fk_ventas_cliente FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente),
+    CONSTRAINT fk_ventas_empleado FOREIGN KEY (id_empleado) REFERENCES Empleados(id_empleado)
+);
+
+-- Tabla Detalle_Ventas
+CREATE TABLE Detalle_Ventas (
+    id_detalle NUMBER PRIMARY KEY,
+    id_venta NUMBER,
+    id_producto NUMBER,
+    cantidad NUMBER,
+    subtotal NUMBER(10, 2),
+    CONSTRAINT fk_detalle_ventas_venta FOREIGN KEY (id_venta) REFERENCES Ventas(id_venta),
+    CONSTRAINT fk_detalle_ventas_producto FOREIGN KEY (id_producto) REFERENCES Productos(id_producto)
+);
+
+-- Tabla Compras
+CREATE TABLE Compras (
+    id_compra NUMBER PRIMARY KEY,
+    id_proveedor NUMBER,
+    fecha_compra DATE,
+    total NUMBER(10,2),
+    CONSTRAINT fk_compras_proveedor FOREIGN KEY (id_proveedor) REFERENCES Proveedores(id_proveedor)
+);

@@ -1,0 +1,55 @@
+--crear compras
+CREATE OR REPLACE PROCEDURE INSERTAR_COMPRA(
+    p_id_compra IN NUMBER,
+    p_id_proveedor IN NUMBER,
+    p_fecha_compra IN DATE,
+    p_total IN NUMBER
+) AS
+BEGIN
+    INSERT INTO COMPRAS (ID_COMPRA, ID_PROVEEDOR, FECHA_COMPRA, TOTAL)
+    VALUES (p_id_compra, p_id_proveedor, p_fecha_compra, p_total);
+    COMMIT;
+END INSERTAR_COMPRA;
+/
+
+--actualizar compras
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_COMPRA(
+    p_id_compra IN NUMBER,
+    p_id_proveedor IN NUMBER,
+    p_fecha_compra IN DATE,
+    p_total IN NUMBER
+) AS
+BEGIN
+    UPDATE COMPRAS
+    SET ID_PROVEEDOR = p_id_proveedor,
+        FECHA_COMPRA = p_fecha_compra,
+        TOTAL = p_total
+    WHERE ID_COMPRA = p_id_compra;
+    COMMIT;
+END ACTUALIZAR_COMPRA;
+/
+
+--eliminar compras
+CREATE OR REPLACE PROCEDURE ELIMINAR_COMPRA(
+    p_id_compra IN NUMBER
+) AS
+BEGIN
+    DELETE FROM COMPRAS WHERE ID_COMPRA = p_id_compra;
+    COMMIT;
+END ELIMINAR_COMPRA;
+/
+--listar compras
+CREATE OR REPLACE PROCEDURE LISTAR_COMPRAS(
+    p_cursor OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+    SELECT
+    "A1"."ID_COMPRA"    "ID_COMPRA",
+    "A1"."ID_PROVEEDOR" "ID_PROVEEDOR",
+    "A1"."FECHA_COMPRA" "FECHA_COMPRA",
+    "A1"."TOTAL"        "TOTAL"
+FROM
+    "SYSTEM"."COMPRAS" "A1";
+END;
+/
