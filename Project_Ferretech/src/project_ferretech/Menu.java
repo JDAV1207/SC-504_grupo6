@@ -34,20 +34,276 @@ public class Menu extends javax.swing.JFrame {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tablaCategorias = new javax.swing.JTable();
-        CrearCategoria = new javax.swing.JButton();
-        EditarCategoria = new javax.swing.JButton();
-        BorrarCategoria = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        Empleados = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablaEmpleados = new javax.swing.JTable();
+        CrearEmpleado = new javax.swing.JButton();
+        EditarEmpleado = new javax.swing.JButton();
+        EliminarEmpleado = new javax.swing.JButton();
+        Clientes = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tablaClientes = new javax.swing.JTable();
+        CrearClientes = new javax.swing.JButton();
+        EditarClientes = new javax.swing.JButton();
+        EliminarClientes = new javax.swing.JButton();
+        Compras = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaCompras = new javax.swing.JTable();
         CrearCompra = new javax.swing.JButton();
         EditarCompra = new javax.swing.JButton();
         EliminarCompra = new javax.swing.JButton();
+        Ventas = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tablaVentas = new javax.swing.JTable();
+        CrearVentas = new javax.swing.JButton();
+        EditarVentas = new javax.swing.JButton();
+        BorrarVentas = new javax.swing.JButton();
+        Categorias = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tablaCategorias = new javax.swing.JTable();
+        CrearCategoria = new javax.swing.JButton();
+        EditarCategoria = new javax.swing.JButton();
+        BorrarCategoria = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("FERRETEC");
+        setForeground(new java.awt.Color(204, 255, 204));
+        setName(""); // NOI18N
+
+        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 102));
+        jTabbedPane1.setFont(new java.awt.Font("STIXGeneral", 0, 15)); // NOI18N
+        jTabbedPane1.setName("FERRETECH"); // NOI18N
+
+        tablaEmpleados.setModel(project_ferretech.EmpleadoDAO.obtenerEmpleados());
+        tablaEmpleados.setName("FERRETECH"); // NOI18N
+        jScrollPane3.setViewportView(tablaEmpleados);
+
+        CrearEmpleado.setText("Crear");
+        CrearEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearEmpleadoActionPerformed(evt);
+            }
+        });
+
+        EditarEmpleado.setText("Editar");
+        EditarEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarEmpleadoActionPerformed(evt);
+            }
+        });
+
+        EliminarEmpleado.setText("Eliminar");
+        EliminarEmpleado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarEmpleadoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout EmpleadosLayout = new javax.swing.GroupLayout(Empleados);
+        Empleados.setLayout(EmpleadosLayout);
+        EmpleadosLayout.setHorizontalGroup(
+            EmpleadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(EmpleadosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(EmpleadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EditarEmpleado)
+                    .addComponent(EliminarEmpleado)
+                    .addComponent(CrearEmpleado))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        EmpleadosLayout.setVerticalGroup(
+            EmpleadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(EmpleadosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(EmpleadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(EmpleadosLayout.createSequentialGroup()
+                        .addComponent(CrearEmpleado)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarEmpleado)
+                        .addGap(18, 18, 18)
+                        .addComponent(EliminarEmpleado)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Empleados", Empleados);
+
+        tablaClientes.setModel(project_ferretech.ClienteDAO.obtenerClientes());
+        tablaClientes.setName("FERRETECH"); // NOI18N
+        jScrollPane5.setViewportView(tablaClientes);
+
+        CrearClientes.setText("Crear");
+        CrearClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearClientesActionPerformed(evt);
+            }
+        });
+
+        EditarClientes.setText("Editar");
+        EditarClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarClientesActionPerformed(evt);
+            }
+        });
+
+        EliminarClientes.setText("Eliminar");
+        EliminarClientes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarClientesActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ClientesLayout = new javax.swing.GroupLayout(Clientes);
+        Clientes.setLayout(ClientesLayout);
+        ClientesLayout.setHorizontalGroup(
+            ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ClientesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EditarClientes)
+                    .addComponent(EliminarClientes)
+                    .addComponent(CrearClientes))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        ClientesLayout.setVerticalGroup(
+            ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ClientesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(ClientesLayout.createSequentialGroup()
+                        .addComponent(CrearClientes)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarClientes)
+                        .addGap(18, 18, 18)
+                        .addComponent(EliminarClientes)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Clientes", Clientes);
+
+        tablaCompras.setModel(project_ferretech.CompraDAO.obtenerCompras());
+        jScrollPane2.setViewportView(tablaCompras);
+
+        CrearCompra.setText("Crear");
+        CrearCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearCompraActionPerformed(evt);
+            }
+        });
+
+        EditarCompra.setText("Editar");
+        EditarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarCompraActionPerformed(evt);
+            }
+        });
+
+        EliminarCompra.setText("Eliminar");
+        EliminarCompra.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarCompraActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ComprasLayout = new javax.swing.GroupLayout(Compras);
+        Compras.setLayout(ComprasLayout);
+        ComprasLayout.setHorizontalGroup(
+            ComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ComprasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(ComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EditarCompra)
+                    .addComponent(EliminarCompra)
+                    .addComponent(CrearCompra))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        ComprasLayout.setVerticalGroup(
+            ComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ComprasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(ComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(ComprasLayout.createSequentialGroup()
+                        .addComponent(CrearCompra)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarCompra)
+                        .addGap(18, 18, 18)
+                        .addComponent(EliminarCompra)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Compras", Compras);
+
+        tablaVentas.setModel(project_ferretech.VentaDAO.obtenerVentas());
+        jScrollPane4.setViewportView(tablaVentas);
+
+        CrearVentas.setText("Crear");
+        CrearVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearVentasActionPerformed(evt);
+            }
+        });
+
+        EditarVentas.setText("Editar");
+        EditarVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarVentasActionPerformed(evt);
+            }
+        });
+
+        BorrarVentas.setText("Eliminar");
+        BorrarVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BorrarVentasActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout VentasLayout = new javax.swing.GroupLayout(Ventas);
+        Ventas.setLayout(VentasLayout);
+        VentasLayout.setHorizontalGroup(
+            VentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(VentasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(VentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BorrarVentas, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(VentasLayout.createSequentialGroup()
+                        .addGroup(VentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CrearVentas)
+                            .addComponent(EditarVentas))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26))
+        );
+        VentasLayout.setVerticalGroup(
+            VentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(VentasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(VentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(VentasLayout.createSequentialGroup()
+                        .addComponent(CrearVentas)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarVentas)
+                        .addGap(18, 18, 18)
+                        .addComponent(BorrarVentas)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Ventas", Ventas);
 
         tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
         jScrollPane1.setViewportView(tablaCategorias);
@@ -73,30 +329,30 @@ public class Menu extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout CategoriasLayout = new javax.swing.GroupLayout(Categorias);
+        Categorias.setLayout(CategoriasLayout);
+        CategoriasLayout.setHorizontalGroup(
+            CategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CategoriasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(CategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BorrarCategoria, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CategoriasLayout.createSequentialGroup()
+                        .addGroup(CategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(CrearCategoria)
                             .addComponent(EditarCategoria))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(26, 26, 26))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        CategoriasLayout.setVerticalGroup(
+            CategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CategoriasLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(CategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(CategoriasLayout.createSequentialGroup()
                         .addComponent(CrearCategoria)
                         .addGap(18, 18, 18)
                         .addComponent(EditarCategoria)
@@ -106,74 +362,50 @@ public class Menu extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Categorias", jPanel1);
+        jTabbedPane1.addTab("Categorias", Categorias);
 
-        tablaCompras.setModel(ComprasDAO.obtenerCompras());
-        jScrollPane2.setViewportView(tablaCompras);
+        jPanel4.setBackground(new java.awt.Color(255, 255, 102));
 
-        CrearCompra.setText("Crear");
-        CrearCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CrearCompraActionPerformed(evt);
-            }
-        });
+        jLabel1.setFont(new java.awt.Font("STIXGeneral", 0, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 102, 255));
+        jLabel1.setText("FerreTech");
 
-        EditarCompra.setText("Editar");
-        EditarCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditarCompraActionPerformed(evt);
-            }
-        });
-
-        EliminarCompra.setText("Eliminar");
-        EliminarCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EliminarCompraActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(EditarCompra)
-                    .addComponent(EliminarCompra)
-                    .addComponent(CrearCompra))
-                .addContainerGap(16, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(206, 206, 206))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(CrearCompra)
-                        .addGap(18, 18, 18)
-                        .addComponent(EditarCompra)
-                        .addGap(18, 18, 18)
-                        .addComponent(EliminarCompra)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(jLabel1)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
-
-        jTabbedPane1.addTab("Compras", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1))
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane1)
+                .addContainerGap())
         );
+
+        getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -265,7 +497,7 @@ public class Menu extends javax.swing.JFrame {
                     stmt.execute();
 
                     JOptionPane.showMessageDialog(this, "Compra creada.");
-                    tablaCompras.setModel(ComprasDAO.obtenerCompras());
+                    tablaCompras.setModel(CompraDAO.obtenerCompras());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -302,7 +534,7 @@ public class Menu extends javax.swing.JFrame {
                     stmt.execute();
 
                     JOptionPane.showMessageDialog(this, "Compra actualizada.");
-                    tablaCompras.setModel(ComprasDAO.obtenerCompras());
+                    tablaCompras.setModel(CompraDAO.obtenerCompras());
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -329,12 +561,305 @@ public class Menu extends javax.swing.JFrame {
                 stmt.execute();
 
                 JOptionPane.showMessageDialog(this, "Compra eliminada.");
-                tablaCompras.setModel(ComprasDAO.obtenerCompras());
+                tablaCompras.setModel(CompraDAO.obtenerCompras());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }//GEN-LAST:event_EliminarCompraActionPerformed
+
+    private void CrearEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearEmpleadoActionPerformed
+        int idEmpleado;
+        String nombre;
+        String cargo;
+        String telefono;
+        String correo;
+
+        try {
+            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del empleado:"));
+            nombre = JOptionPane.showInputDialog("Ingrese el nombre y apellido del empleado:");
+            cargo = JOptionPane.showInputDialog("Ingrese el cargo del empleado:");
+            telefono = JOptionPane.showInputDialog("Ingrese el telefono del empleado, separado por un guion (8888-8888):");
+            correo = JOptionPane.showInputDialog("Ingrese el correo del empleado:");
+
+            if (nombre != null && !nombre.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_EMPLEADO(?, ?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, idEmpleado);
+                    stmt.setString(2, nombre);
+                    stmt.setString(3, cargo);
+                    stmt.setString(4, telefono);
+                    stmt.setString(5, correo);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Empleado registrado.");
+                    tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }    }//GEN-LAST:event_CrearEmpleadoActionPerformed
+
+    private void EditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarEmpleadoActionPerformed
+        int fila = tablaEmpleados.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un empleado.");
+            return;
+        }
+
+        int idEmpleado = (int) tablaEmpleados.getValueAt(fila, 0);
+        String nombre;
+        String cargo;
+        String telefono;
+        String correo;
+
+        try {
+            nombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre y apellido del empleado:", tablaEmpleados.getValueAt(fila, 1));
+            cargo = JOptionPane.showInputDialog("Ingrese el nuevo cargo del empleado:", tablaEmpleados.getValueAt(fila, 2));
+            telefono = JOptionPane.showInputDialog("Ingrese el nuevo telefono del empleado, separado por un guion (8888-8888):", tablaEmpleados.getValueAt(fila, 3));
+            correo = JOptionPane.showInputDialog("Ingrese el nuevo correo del empleado:", tablaEmpleados.getValueAt(fila, 4));
+
+            if (nombre != null && !nombre.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_EMPLEADO(?, ?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, idEmpleado);
+                    stmt.setString(2, nombre);
+                    stmt.setString(3, cargo);
+                    stmt.setString(4, telefono);
+                    stmt.setString(5, correo);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Empleado actualizado.");
+                    tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }    }//GEN-LAST:event_EditarEmpleadoActionPerformed
+
+    private void EliminarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarEmpleadoActionPerformed
+        int fila = tablaEmpleados.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un empleado.");
+            return;
+        }
+
+        int id = (int) tablaEmpleados.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este empleado?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_EMPLEADO(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Empleado eliminado.");
+                tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_EliminarEmpleadoActionPerformed
+
+    private void CrearClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearClientesActionPerformed
+        int idCliente;
+        String nombre;
+        String telefono;
+        String direccion;
+        String correo;
+
+        try {
+            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del cliente:"));
+            nombre = JOptionPane.showInputDialog("Ingrese el nombre y apellido del cliente:");
+            telefono = JOptionPane.showInputDialog("Ingrese el telefono del cliente, separado por un guion (8888-8888):");
+            direccion = JOptionPane.showInputDialog("Ingrese la direccion del cliente:");
+            correo = JOptionPane.showInputDialog("Ingrese el correo del cliente:");
+
+            if (nombre != null && !nombre.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CLIENTE(?, ?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, idCliente);
+                    stmt.setString(2, nombre);
+                    stmt.setString(3, telefono);
+                    stmt.setString(4, direccion);
+                    stmt.setString(5, correo);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Cliente registrado.");
+                    tablaClientes.setModel(ClienteDAO.obtenerClientes());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_CrearClientesActionPerformed
+
+    private void EditarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarClientesActionPerformed
+        int fila = tablaClientes.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
+            return;
+        }
+
+        int idCliente = (int) tablaClientes.getValueAt(fila, 0);
+        String nombre;
+        String telefono;
+        String direccion;
+        String correo;
+
+        try {
+            nombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre y apellido del cliente:", tablaClientes.getValueAt(fila, 1));
+            telefono = JOptionPane.showInputDialog("Ingrese el nuevo telefono del cliente, separado por un guion (8888-8888):", tablaClientes.getValueAt(fila, 2));
+            direccion = JOptionPane.showInputDialog("Ingrese la nueva direccion del cliente:", tablaClientes.getValueAt(fila, 3));
+            correo = JOptionPane.showInputDialog("Ingrese el nuevo correo del cliente:", tablaClientes.getValueAt(fila, 4));
+
+            if (nombre != null && !nombre.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_CLIENTE(?, ?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, idCliente);
+                    stmt.setString(2, nombre);
+                    stmt.setString(3, telefono);
+                    stmt.setString(4, direccion);
+                    stmt.setString(5, correo);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Cliente actualizado.");
+                    tablaClientes.setModel(ClienteDAO.obtenerClientes());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_EditarClientesActionPerformed
+
+    private void EliminarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarClientesActionPerformed
+        int fila = tablaClientes.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
+            return;
+        }
+
+        int id = (int) tablaClientes.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CLIENTE(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Cliente eliminado.");
+                tablaClientes.setModel(ClienteDAO.obtenerClientes());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_EliminarClientesActionPerformed
+
+    private void CrearVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearVentasActionPerformed
+        int idCliente;
+        int idEmpleado;
+        String fechaVenta;
+        double total;
+
+        try {
+            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del cliente al que se le realizo la venta:"));
+            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del empleado que realizo la venta:"));
+            fechaVenta = JOptionPane.showInputDialog("Ingrese la fecha de la venta (YYYY-MM-DD):");
+            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el total de la venta:"));
+
+            if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, obtenerNuevoID());
+                    stmt.setInt(2, idCliente);
+                    stmt.setInt(3, idEmpleado);
+                    stmt.setDate(4, Date.valueOf(fechaVenta));
+                    stmt.setDouble(5, total);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Venta registrada.");
+                    tablaVentas.setModel(VentaDAO.obtenerVentas());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_CrearVentasActionPerformed
+
+    private void EditarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarVentasActionPerformed
+        int fila = tablaVentas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una compra.");
+            return;
+        }
+
+        int id = (int) tablaVentas.getValueAt(fila, 0);
+        int idCliente;
+        int idEmpleado;
+        String fechaVenta;
+        double total;
+
+        try {
+            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo ID del cliente al que se le realizo la venta:", tablaVentas.getValueAt(fila, 1)));
+            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo ID del empleado que realizo la venta:", tablaVentas.getValueAt(fila, 2)));
+            fechaVenta = JOptionPane.showInputDialog("Ingrese la nueva fecha de la venta (YYYY-MM-DD):", tablaVentas.getValueAt(fila, 3));
+            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el nuevo total de la venta:", tablaVentas.getValueAt(fila, 4)));
+
+            if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
+
+                    stmt.setInt(1, id);
+                    stmt.setInt(2, idCliente);
+                    stmt.setInt(3, idEmpleado);
+                    stmt.setDate(4, Date.valueOf(fechaVenta));
+                    stmt.setDouble(5, total);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(this, "Venta actualizada.");
+                    tablaVentas.setModel(VentaDAO.obtenerVentas());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_EditarVentasActionPerformed
+
+    private void BorrarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarVentasActionPerformed
+        int fila = tablaVentas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione una venta.");
+            return;
+        }
+
+        int id = (int) tablaVentas.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_VENTA(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Venta eliminada.");
+                tablaVentas.setModel(VentaDAO.obtenerVentas());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_BorrarVentasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -374,17 +899,37 @@ public class Menu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BorrarCategoria;
+    private javax.swing.JButton BorrarVentas;
+    private javax.swing.JPanel Categorias;
+    private javax.swing.JPanel Clientes;
+    private javax.swing.JPanel Compras;
     private javax.swing.JButton CrearCategoria;
+    private javax.swing.JButton CrearClientes;
     private javax.swing.JButton CrearCompra;
+    private javax.swing.JButton CrearEmpleado;
+    private javax.swing.JButton CrearVentas;
     private javax.swing.JButton EditarCategoria;
+    private javax.swing.JButton EditarClientes;
     private javax.swing.JButton EditarCompra;
+    private javax.swing.JButton EditarEmpleado;
+    private javax.swing.JButton EditarVentas;
+    private javax.swing.JButton EliminarClientes;
     private javax.swing.JButton EliminarCompra;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton EliminarEmpleado;
+    private javax.swing.JPanel Empleados;
+    private javax.swing.JPanel Ventas;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tablaCategorias;
+    private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaCompras;
+    private javax.swing.JTable tablaEmpleados;
+    private javax.swing.JTable tablaVentas;
     // End of variables declaration//GEN-END:variables
 }
