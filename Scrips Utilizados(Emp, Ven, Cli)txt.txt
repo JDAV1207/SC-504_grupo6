@@ -1,0 +1,226 @@
+--PROCEDIMIENTOS DE EMPLEADOS
+
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_EMPLEADO(
+     p_id_empleado IN NUMBER,
+     p_nombre IN VARCHAR2,
+     p_cargo IN VARCHAR2,
+     p_telefono IN VARCHAR2,
+     p_correo IN VARCHAR2
+ ) AS
+ BEGIN
+     UPDATE EMPLEADOS
+     SET NOMBRE = p_nombre,
+         CARGO = p_cargo,
+         TELEFONO = p_telefono,
+         CORREO = p_correo
+     WHERE ID_EMPLEADO = p_id_empleado;
+     COMMIT;
+ END ACTUALIZAR_EMPLEADO;
+/
+
+CREATE OR REPLACE PROCEDURE ELIMINAR_EMPLEADO(
+     p_id_empleado IN NUMBER
+ ) AS
+ BEGIN
+     DELETE FROM EMPLEADOS WHERE ID_EMPLEADO = p_id_empleado;
+     COMMIT;
+ END ELIMINAR_EMPLEADO;
+/
+
+CREATE OR REPLACE PROCEDURE LISTAR_EMPLEADOS(
+     p_cursor OUT SYS_REFCURSOR
+ ) AS
+ BEGIN
+     OPEN p_cursor FOR
+     SELECT
+         "A1"."ID_EMPLEADO" "ID_EMPLEADO",
+         "A1"."NOMBRE" "NOMBRE",
+         "A1"."CARGO" "CARGO",
+         "A1"."TELEFONO" "TELEFONO",
+         "A1"."CORREO" "CORREO"
+     FROM
+         "EMPLEADOS" "A1";
+ END LISTAR_EMPLEADOS;
+/
+
+CREATE OR REPLACE PROCEDURE INSERTAR_EMPLEADO(
+     p_id_empleado IN NUMBER,
+     p_nombre IN VARCHAR2,
+     p_cargo IN VARCHAR2,
+     p_telefono IN VARCHAR2,
+     p_correo IN VARCHAR2
+ ) AS
+ BEGIN
+     INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+     VALUES (p_id_empleado, p_nombre, p_cargo, p_telefono, p_correo);
+     COMMIT;
+ END INSERTAR_EMPLEADO;
+/
+
+---INSERTS
+INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+VALUES (1, 'Juan Pérez', 'Gerente de Ventas', '8888-1122', 'juan.perez@mail.com');
+
+INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+VALUES (2, 'Ana Gómez', 'Asistente Administrativa', '8888-3344', 'ana.gomez@mail.com');
+
+INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+VALUES (3, 'Carlos Rojas', 'Supervisor de Almacén', '8888-5566', 'carlos.rojas@mail.com');
+
+INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+VALUES (4, 'María Fernández', 'Contadora', '8888-7788', 'maria.fernandez@mail.com');
+
+INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+VALUES (5, 'José Sánchez', 'Encargado de Compras', '8888-9900', 'jose.sanchez@mail.com');
+
+--PROCEDIMIENTOS DE CLIENTES
+
+
+CREATE OR REPLACE PROCEDURE INSERTAR_CLIENTE(
+     p_id_cliente IN NUMBER,
+     p_nombre IN VARCHAR2,
+     p_telefono IN VARCHAR2,
+     p_direccion IN VARCHAR2,
+     p_correo IN VARCHAR2
+ ) AS
+ BEGIN
+     INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+     VALUES (p_id_cliente, p_nombre, p_telefono, p_direccion, p_correo);
+     COMMIT;
+ END INSERTAR_CLIENTE;
+/
+
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_CLIENTE(
+     p_id_cliente IN NUMBER,
+     p_nombre IN VARCHAR2,
+     p_telefono IN VARCHAR2,
+     p_direccion IN VARCHAR2,
+     p_correo IN VARCHAR2
+ ) AS
+ BEGIN
+     UPDATE CLIENTES
+     SET NOMBRE = p_nombre,
+         TELEFONO = p_telefono,
+         DIRECCION = p_direccion,
+         CORREO = p_correo
+     WHERE ID_CLIENTE = p_id_cliente;
+     COMMIT;
+ END ACTUALIZAR_CLIENTE;
+/
+
+CREATE OR REPLACE PROCEDURE ELIMINAR_CLIENTE(
+     p_id_cliente IN NUMBER
+ ) AS
+ BEGIN
+     DELETE FROM CLIENTES WHERE ID_CLIENTE = p_id_cliente;
+     COMMIT;
+ END ELIMINAR_CLIENTE;
+/
+
+CREATE OR REPLACE PROCEDURE LISTAR_CLIENTES(
+     p_cursor OUT SYS_REFCURSOR
+ ) AS
+ BEGIN
+     OPEN p_cursor FOR
+     SELECT
+         "A1"."ID_CLIENTE" AS "ID_CLIENTE",
+         "A1"."NOMBRE" AS "NOMBRE",
+         "A1"."TELEFONO" AS "TELEFONO",
+         "A1"."DIRECCION" AS "DIRECCION",
+         "A1"."CORREO" AS "CORREO"
+     FROM
+         "CLIENTES" "A1";
+ END LISTAR_CLIENTES;
+/
+
+----INSERTS
+
+INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+VALUES (1, 'Carlos Hernández', '8844-5566', 'San José, Avenida Central', 'carlos.hernandez@gmail.com');
+
+INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+VALUES (2, 'María Gómez', '8799-3322', 'Cartago, Calle Vieja', 'maria.gomez@hotmail.com');
+
+INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+VALUES (3, 'Luis Rodríguez', '8555-7744', 'Alajuela, Urbanización Vista Verde', 'luis.rodriguez@yahoo.com');
+
+INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+VALUES (4, 'Ana Fernández', '8123-9988', 'Heredia, Condominio Las Flores', 'ana.fernandez@outlook.com');
+
+INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+VALUES (5, 'José Solano', '8000-2233', 'Puntarenas, Paseo de los Turistas', 'jose.solano@icloud.com');
+
+---PROCEDIMIENTOS DE VENTAS
+
+CREATE OR REPLACE PROCEDURE INSERTAR_VENTA(
+     p_id_venta IN NUMBER,
+     p_id_cliente IN NUMBER,
+     p_id_empleado IN NUMBER,
+     p_fecha_venta IN DATE,
+     p_total IN NUMBER
+ ) AS
+ BEGIN
+     INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+     VALUES (p_id_venta, p_id_cliente, p_id_empleado, p_fecha_venta, p_total);
+     COMMIT;
+ END INSERTAR_VENTA;
+/
+
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_VENTA(
+     p_id_venta IN NUMBER,
+     p_id_cliente IN NUMBER,
+     p_id_empleado IN NUMBER,
+     p_fecha_venta IN DATE,
+     p_total IN NUMBER
+ ) AS
+ BEGIN
+     UPDATE VENTAS
+     SET ID_CLIENTE = p_id_cliente,
+         ID_EMPLEADO = p_id_empleado,
+         FECHA_VENTA = p_fecha_venta,
+         TOTAL = p_total
+     WHERE ID_VENTA = p_id_venta;
+     COMMIT;
+ END ACTUALIZAR_VENTA;
+/
+
+CREATE OR REPLACE PROCEDURE ELIMINAR_VENTA(
+     p_id_venta IN NUMBER
+ ) AS
+ BEGIN
+     DELETE FROM VENTAS WHERE ID_VENTA = p_id_venta;
+     COMMIT;
+ END ELIMINAR_VENTA;
+/
+
+CREATE OR REPLACE PROCEDURE LISTAR_VENTAS(
+     p_cursor OUT SYS_REFCURSOR
+ ) AS
+ BEGIN
+     OPEN p_cursor FOR
+     SELECT
+         "A1"."ID_VENTA" AS "ID_VENTA",
+         "A1"."ID_CLIENTE" AS "ID_CLIENTE",
+         "A1"."ID_EMPLEADO" AS "ID_EMPLEADO",
+         "A1"."FECHA_VENTA" AS "FECHA_VENTA",
+         "A1"."TOTAL" AS "TOTAL"
+     FROM
+         "VENTAS" "A1";
+ END LISTAR_VENTAS;
+/
+
+----INSERTS
+INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+VALUES (1, 1, 3, TO_DATE('2025-03-15', 'YYYY-MM-DD'), 1500.50);
+
+INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+VALUES (2, 2, 4, TO_DATE('2025-03-16', 'YYYY-MM-DD'), 250.00);
+
+INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+VALUES (3, 3, 1, TO_DATE('2025-03-17', 'YYYY-MM-DD'), 980.30);
+
+INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+VALUES (4, 4, 5, TO_DATE('2025-03-18', 'YYYY-MM-DD'), 760.00);
+
+INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+VALUES (5, 5, 2, TO_DATE('2025-03-19', 'YYYY-MM-DD'), 1200.99);
