@@ -64,6 +64,12 @@ public class Menu extends javax.swing.JFrame {
         CrearCategoria = new javax.swing.JButton();
         EditarCategoria = new javax.swing.JButton();
         BorrarCategoria = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tablaProveedor = new javax.swing.JTable();
+        CrearProveedor = new javax.swing.JButton();
+        EditarProveedor = new javax.swing.JButton();
+        BorrarProveedor = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -363,6 +369,65 @@ public class Menu extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Categorias", Categorias);
+
+        tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
+        jScrollPane6.setViewportView(tablaProveedor);
+
+        CrearProveedor.setText("Crear");
+        CrearProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearProveedorActionPerformed(evt);
+            }
+        });
+
+        EditarProveedor.setText("Editar");
+        EditarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarProveedorActionPerformed(evt);
+            }
+        });
+
+        BorrarProveedor.setText("Eliminar");
+        BorrarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BorrarProveedorActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BorrarProveedor, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CrearProveedor)
+                            .addComponent(EditarProveedor))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(CrearProveedor)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarProveedor)
+                        .addGap(18, 18, 18)
+                        .addComponent(BorrarProveedor)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Proveedores", jPanel1);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 102));
 
@@ -861,6 +926,95 @@ public class Menu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BorrarVentasActionPerformed
 
+    private void CrearProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProveedorActionPerformed
+        // Solicitar información del proveedor
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del proveedor:");
+        String telefono = JOptionPane.showInputDialog("Ingrese el teléfono del proveedor:");
+        String direccion = JOptionPane.showInputDialog("Ingrese la dirección del proveedor:");
+        String correo = JOptionPane.showInputDialog("Ingrese el correo del proveedor:");
+
+        if (nombre != null && !nombre.trim().isEmpty()
+                && telefono != null && !telefono.trim().isEmpty()
+                && direccion != null && !direccion.trim().isEmpty()
+                && correo != null && !correo.trim().isEmpty()) {
+
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
+
+                stmt.setInt(1, obtenerNuevoID());
+                stmt.setString(2, nombre);
+                stmt.setString(3, telefono);
+                stmt.setString(4, direccion);
+                stmt.setString(5, correo);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Proveedor agregado.");
+
+                tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al agregar el proveedor.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+        }
+    }//GEN-LAST:event_CrearProveedorActionPerformed
+
+    private void EditarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProveedorActionPerformed
+        int fila = tablaProveedor.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un proveedor.");
+            return;
+        }
+
+        int id = (int) tablaProveedor.getValueAt(fila, 0);
+        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaProveedor.getValueAt(fila, 1));
+        String nuevoTelefono = JOptionPane.showInputDialog("Nuevo teléfono:", tablaProveedor.getValueAt(fila, 2));
+        String nuevoDireccion = JOptionPane.showInputDialog("Nueva Dirección:", tablaProveedor.getValueAt(fila, 3));
+        String nuevoCorreo = JOptionPane.showInputDialog("Nuevo Correo:", tablaProveedor.getValueAt(fila, 4));
+
+        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty() && nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.setString(2, nuevoNombre);
+                stmt.setString(3, nuevoTelefono);
+                stmt.setString(4, nuevoDireccion);
+                stmt.setString(5, nuevoCorreo);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Proveedor actualizado.");
+                tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_EditarProveedorActionPerformed
+
+    private void BorrarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProveedorActionPerformed
+        int fila = tablaProveedor.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un Proveedor.");
+            return;
+        }
+
+        int id = (int) tablaProveedor.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PROVEEDOR(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Proveedor eliminado.");
+                tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_BorrarProveedorActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -899,6 +1053,7 @@ public class Menu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BorrarCategoria;
+    private javax.swing.JButton BorrarProveedor;
     private javax.swing.JButton BorrarVentas;
     private javax.swing.JPanel Categorias;
     private javax.swing.JPanel Clientes;
@@ -907,11 +1062,13 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton CrearClientes;
     private javax.swing.JButton CrearCompra;
     private javax.swing.JButton CrearEmpleado;
+    private javax.swing.JButton CrearProveedor;
     private javax.swing.JButton CrearVentas;
     private javax.swing.JButton EditarCategoria;
     private javax.swing.JButton EditarClientes;
     private javax.swing.JButton EditarCompra;
     private javax.swing.JButton EditarEmpleado;
+    private javax.swing.JButton EditarProveedor;
     private javax.swing.JButton EditarVentas;
     private javax.swing.JButton EliminarClientes;
     private javax.swing.JButton EliminarCompra;
@@ -919,17 +1076,20 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel Empleados;
     private javax.swing.JPanel Ventas;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tablaCategorias;
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaCompras;
     private javax.swing.JTable tablaEmpleados;
+    private javax.swing.JTable tablaProveedor;
     private javax.swing.JTable tablaVentas;
     // End of variables declaration//GEN-END:variables
 }
