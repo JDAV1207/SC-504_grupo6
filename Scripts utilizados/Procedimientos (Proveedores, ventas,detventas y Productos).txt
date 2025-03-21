@@ -107,9 +107,7 @@ CREATE TABLE COMPRAS (
 );
 select * from Proveedores;
 
-
-
---////////////////////////////////////////////////////////////////////////////////////////////////
+--//////////////////////////////////////////////////////////////////////////--
 
 --Proveedores
 CREATE OR REPLACE PROCEDURE LISTAR_PROVEEDORES (cur OUT SYS_REFCURSOR) AS
@@ -226,6 +224,64 @@ BEGIN
     COMMIT;
 END;
 
+
+--PRODUCTOS
+CREATE OR REPLACE PROCEDURE INSERTAR_PRODUCTO(
+    p_id_producto NUMBER,
+    p_nombre VARCHAR2,
+    p_descripcion VARCHAR2,
+    p_precio DECIMAL,
+    p_stock NUMBER,
+    p_id_categoria NUMBER
+) AS
+BEGIN
+    INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA)
+    VALUES (p_id_producto, p_nombre, p_descripcion, p_precio, p_stock, p_id_categoria);
+    COMMIT;
+END;
+
+
+CREATE OR REPLACE PROCEDURE LISTAR_PRODUCTOS (cur OUT SYS_REFCURSOR) AS
+BEGIN
+    OPEN cur FOR SELECT
+        ID_PRODUCTO,
+        NOMBRE,
+        DESCRIPCION,
+        PRECIO,
+        STOCK,
+        ID_CATEGORIA
+    FROM PRODUCTOS;
+END;
+
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_PRODUCTO(
+    p_id_producto NUMBER,
+    p_nombre VARCHAR2,
+    p_descripcion VARCHAR2,
+    p_precio DECIMAL,
+    p_stock NUMBER,
+    p_id_categoria NUMBER
+) AS
+BEGIN
+    UPDATE PRODUCTOS
+    SET NOMBRE = p_nombre,
+        DESCRIPCION = p_descripcion,
+        PRECIO = p_precio,
+        STOCK = p_stock,
+        ID_CATEGORIA = p_id_categoria
+    WHERE ID_PRODUCTO = p_id_producto;
+    COMMIT;
+END;
+
+CREATE OR REPLACE PROCEDURE ELIMINAR_PRODUCTO(
+    p_id_producto NUMBER
+) AS
+BEGIN
+    DELETE FROM PRODUCTOS WHERE ID_PRODUCTO = p_id_producto;
+    COMMIT;
+END;
+
+
+
 --INSERTs Proveedores
 INSERT INTO PROVEEDORES (ID_PROVEEDOR, NOMBRE, TELEFONO, DIRECCION, CORREO) 
 VALUES (100, 'Los Angeles', '+506-1234-9878', 'Brava, Heredia', 'losangeles@hotmail.com');
@@ -299,3 +355,73 @@ VALUES (2, 1001, 2, 1, 150.00);
 
 INSERT INTO DETALLE_VENTAS (ID_DETALLE, ID_VENTA, ID_PRODUCTO, CANTIDAD, SUBTOTAL) 
 VALUES (3, 1002, 3, 5, 750.00);
+
+
+--iNSERT PRODUCTOS
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (1, 'Taladro', 'Herramienta electrica', 35769.11, 15, 1);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (2, 'Martillo', 'Clavar o demoler', 5400.1, 50, 2);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (3, 'Destornillador', 'Ajustar/desajustar tornillos', 3542.7, 43, 2);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (4, 'Cinta Metrica', 'Tomar medidas', 5235.38, 72, 2);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA)
+VALUES (5, 'Llave inglesa ajustable', 'Ajustar tuercas o tornillos', 4825.67, 15, 2);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (6, 'Sierra', 'Herramienta electrica, cortar madera', 25965.89, 10, 1);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (7, 'Alicate', 'Cortar cables o sujetar cosas', 2981.57, 53, 2);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (8, 'Tenazas', 'Cortar o sujetar', 2685.23, 65, 2);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (9, 'Taype', 'Aislar cables', 3640.77, 30, 1);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (10, 'Tornillos de madera', 'Fijacion en madera', 50.64, 582, 4);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (11, 'Tornillo de metal', 'Fijacion en metal', 50.75, 564, 4);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (12, 'Clavos', 'Fijacion en madera', 40.59, 485, 4);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (13, 'Clavos de acero', 'Fijacion en cemento', 45.32, 633, 4);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (14, 'Tubo de PVC', 'Conducción de agua', 8999.66, 67, 3);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (15, 'Pala', 'Excavar, jardinería o mover tierra', 10625.21, 18, 5);
+
+INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA) 
+VALUES (16, 'Carretillo', 'Transportar materiales', 32537.21, 15, 5);
+
+
+
+--Insert categorias
+
+INSERT INTO CATEGORIAS (ID_CATEGORIA, NOMBRE_CATEGORIA) 
+VALUES (1, 'Heeramienta Electrica');
+
+INSERT INTO CATEGORIAS (ID_CATEGORIA, NOMBRE_CATEGORIA) 
+VALUES (2, 'Herramienta manual');
+
+INSERT INTO CATEGORIAS (ID_CATEGORIA, NOMBRE_CATEGORIA) 
+VALUES (3, 'Herramienta para agua');
+
+INSERT INTO CATEGORIAS (ID_CATEGORIA, NOMBRE_CATEGORIA) 
+VALUES (4, 'Materiales de Fijacion');
+
+INSERT INTO CATEGORIAS (ID_CATEGORIA, NOMBRE_CATEGORIA) 
+VALUES (5, 'Herramientas de excavacion o jardinería');
