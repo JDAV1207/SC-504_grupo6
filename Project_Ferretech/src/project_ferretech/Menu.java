@@ -70,6 +70,12 @@ public class Menu extends javax.swing.JFrame {
         CrearProveedor = new javax.swing.JButton();
         EditarProveedor = new javax.swing.JButton();
         BorrarProveedor = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tablaProducto = new javax.swing.JTable();
+        CrearProducto = new javax.swing.JButton();
+        EditarProducto = new javax.swing.JButton();
+        BorrarProducto = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -126,7 +132,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(EmpleadosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(EmpleadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                     .addGroup(EmpleadosLayout.createSequentialGroup()
                         .addComponent(CrearEmpleado)
                         .addGap(18, 18, 18)
@@ -183,7 +189,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(ClientesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(ClientesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                     .addGroup(ClientesLayout.createSequentialGroup()
                         .addComponent(CrearClientes)
                         .addGap(18, 18, 18)
@@ -239,7 +245,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(ComprasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(ComprasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                     .addGroup(ComprasLayout.createSequentialGroup()
                         .addComponent(CrearCompra)
                         .addGap(18, 18, 18)
@@ -298,7 +304,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(VentasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(VentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                     .addGroup(VentasLayout.createSequentialGroup()
                         .addComponent(CrearVentas)
                         .addGap(18, 18, 18)
@@ -357,7 +363,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(CategoriasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CategoriasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                     .addGroup(CategoriasLayout.createSequentialGroup()
                         .addComponent(CrearCategoria)
                         .addGap(18, 18, 18)
@@ -416,7 +422,7 @@ public class Menu extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(CrearProveedor)
                         .addGap(18, 18, 18)
@@ -428,6 +434,65 @@ public class Menu extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Proveedores", jPanel1);
+
+        tablaProducto.setModel(ProveedorDAO.obtenerProveedores());
+        jScrollPane7.setViewportView(tablaProducto);
+
+        CrearProducto.setText("Crear");
+        CrearProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearProductoActionPerformed(evt);
+            }
+        });
+
+        EditarProducto.setText("Editar");
+        EditarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarProductoActionPerformed(evt);
+            }
+        });
+
+        BorrarProducto.setText("Eliminar");
+        BorrarProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BorrarProductoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BorrarProducto, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CrearProducto)
+                            .addComponent(EditarProducto))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(CrearProducto)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarProducto)
+                        .addGap(18, 18, 18)
+                        .addComponent(BorrarProducto)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Productos", jPanel2);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 102));
 
@@ -927,7 +992,7 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_BorrarVentasActionPerformed
 
     private void CrearProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProveedorActionPerformed
-        // Solicitar información del proveedor
+        // Solicitar información sobre proveedor
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre del proveedor:");
         String telefono = JOptionPane.showInputDialog("Ingrese el teléfono del proveedor:");
         String direccion = JOptionPane.showInputDialog("Ingrese la dirección del proveedor:");
@@ -1015,6 +1080,112 @@ public class Menu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BorrarProveedorActionPerformed
 
+    private void CrearProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProductoActionPerformed
+
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
+        String descripcion = JOptionPane.showInputDialog("Ingrese descripción del producto:");
+        String precioStr = JOptionPane.showInputDialog("Ingrese el precio:");
+        String stockStr = JOptionPane.showInputDialog("Ingrese la cantidad en stock:");
+        String idCategoriaStr = JOptionPane.showInputDialog("Ingrese el ID de la categoría:");
+
+        if (nombre != null && !nombre.trim().isEmpty()
+                && descripcion != null && !descripcion.trim().isEmpty()
+                && precioStr != null && !precioStr.trim().isEmpty()
+                && stockStr != null && !stockStr.trim().isEmpty()
+                && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
+
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
+
+                stmt.setInt(1, obtenerNuevoID());
+                stmt.setString(2, nombre);
+                stmt.setString(3, descripcion);
+                stmt.setDouble(4, Double.parseDouble(precioStr));
+                stmt.setInt(5, Integer.parseInt(stockStr));
+                stmt.setInt(6, Integer.parseInt(idCategoriaStr));
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Producto agregado correctamente.");
+                tablaProducto.setModel(ProductoDAO.obtenerProductos());
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al agregar el producto.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los espacios.");
+        }
+    }//GEN-LAST:event_CrearProductoActionPerformed
+
+    private void EditarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProductoActionPerformed
+
+        int fila = tablaProducto.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto.");
+            return;
+        }
+        int id = (int) tablaProducto.getValueAt(fila, 0);
+        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaProducto.getValueAt(fila, 1));
+        String nuevaDescripcion = JOptionPane.showInputDialog("Nueva descripción:", tablaProducto.getValueAt(fila, 2));
+        String nuevoPrecioStr = JOptionPane.showInputDialog("Nuevo precio:", tablaProducto.getValueAt(fila, 3));
+        String nuevoStockStr = JOptionPane.showInputDialog("Nuevo stock:", tablaProducto.getValueAt(fila, 4));
+        String nuevaCategoriaStr = JOptionPane.showInputDialog("Nuevo ID de categoría:", tablaProducto.getValueAt(fila, 5));
+
+        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()
+                && nuevaDescripcion != null && !nuevaDescripcion.trim().isEmpty()
+                && nuevoPrecioStr != null && !nuevoPrecioStr.trim().isEmpty()
+                && nuevoStockStr != null && !nuevoStockStr.trim().isEmpty()
+                && nuevaCategoriaStr != null && !nuevaCategoriaStr.trim().isEmpty()) {
+
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.setString(2, nuevoNombre);
+                stmt.setString(3, nuevaDescripcion);
+                stmt.setDouble(4, Double.parseDouble(nuevoPrecioStr));
+                stmt.setInt(5, Integer.parseInt(nuevoStockStr));
+                stmt.setInt(6, Integer.parseInt(nuevaCategoriaStr));
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Producto actualizado.");
+                tablaProducto.setModel(ProductoDAO.obtenerProductos()); // Actualizar tabla
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al actualizar el producto.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+        }
+    }//GEN-LAST:event_EditarProductoActionPerformed
+
+    private void BorrarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProductoActionPerformed
+        
+        int fila = tablaProducto.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto.");
+            return;
+        }
+        
+        int id = (int) tablaProducto.getValueAt(fila, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+        try (Connection con = ConexionOracle.getConnection(); 
+             CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PRODUCTO(?)}")) {
+
+            stmt.setInt(1, id);
+            stmt.execute();
+
+            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+            tablaProducto.setModel(ProductoDAO.obtenerProductos()); 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al eliminar el producto.");
+        }
+    }        
+    }//GEN-LAST:event_BorrarProductoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1053,6 +1224,7 @@ public class Menu extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BorrarCategoria;
+    private javax.swing.JButton BorrarProducto;
     private javax.swing.JButton BorrarProveedor;
     private javax.swing.JButton BorrarVentas;
     private javax.swing.JPanel Categorias;
@@ -1062,12 +1234,14 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton CrearClientes;
     private javax.swing.JButton CrearCompra;
     private javax.swing.JButton CrearEmpleado;
+    private javax.swing.JButton CrearProducto;
     private javax.swing.JButton CrearProveedor;
     private javax.swing.JButton CrearVentas;
     private javax.swing.JButton EditarCategoria;
     private javax.swing.JButton EditarClientes;
     private javax.swing.JButton EditarCompra;
     private javax.swing.JButton EditarEmpleado;
+    private javax.swing.JButton EditarProducto;
     private javax.swing.JButton EditarProveedor;
     private javax.swing.JButton EditarVentas;
     private javax.swing.JButton EliminarClientes;
@@ -1077,6 +1251,7 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JPanel Ventas;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -1084,11 +1259,13 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tablaCategorias;
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaCompras;
     private javax.swing.JTable tablaEmpleados;
+    private javax.swing.JTable tablaProducto;
     private javax.swing.JTable tablaProveedor;
     private javax.swing.JTable tablaVentas;
     // End of variables declaration//GEN-END:variables
