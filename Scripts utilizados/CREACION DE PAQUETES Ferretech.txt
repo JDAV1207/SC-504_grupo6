@@ -1,0 +1,711 @@
+--CREACION DE PAQUETES
+
+--PAQUETE DE PROCEDIMIENTOS DE CATEGORIA---------------------------------------------------------------------------
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Categoria IS
+    PROCEDURE LISTAR_CATEGORIAS(cur OUT SYS_REFCURSOR);
+    PROCEDURE INSERTAR_CATEGORIA(p_id NUMBER, p_nombre VARCHAR2);
+    PROCEDURE ACTUALIZAR_CATEGORIA(p_id NUMBER, p_nombre VARCHAR2);
+    PROCEDURE ELIMINAR_CATEGORIA(p_id NUMBER);
+END Pk_Procedimiento_Categoria;
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Categoria IS
+
+    -- Listar categorías
+    PROCEDURE LISTAR_CATEGORIAS(cur OUT SYS_REFCURSOR) IS
+    BEGIN
+        OPEN cur FOR SELECT
+            A1.ID_CATEGORIA     AS ID_CATEGORIA,
+            A1.NOMBRE_CATEGORIA AS NOMBRE_CATEGORIA
+        FROM HR.CATEGORIAS A1;
+    END LISTAR_CATEGORIAS;
+
+    -- Insertar una categoría
+    PROCEDURE INSERTAR_CATEGORIA(p_id NUMBER, p_nombre VARCHAR2) IS
+    BEGIN
+        INSERT INTO CATEGORIAS (ID_CATEGORIA, NOMBRE_CATEGORIA)
+        VALUES (p_id, p_nombre);
+        COMMIT;
+    END INSERTAR_CATEGORIA;
+
+    -- Actualizar una categoría
+    PROCEDURE ACTUALIZAR_CATEGORIA(p_id NUMBER, p_nombre VARCHAR2) IS
+    BEGIN
+        UPDATE CATEGORIAS
+        SET NOMBRE_CATEGORIA = p_nombre
+        WHERE ID_CATEGORIA = p_id;
+        COMMIT;
+    END ACTUALIZAR_CATEGORIA;
+
+    -- Eliminar una categoría
+    PROCEDURE ELIMINAR_CATEGORIA(p_id NUMBER) IS
+    BEGIN
+        DELETE FROM CATEGORIAS
+        WHERE ID_CATEGORIA = p_id;
+        COMMIT;
+    END ELIMINAR_CATEGORIA;
+
+END Pk_Procedimiento_Categoria;
+
+--PAQUETE DE PROCEDIMIENTOS DE PROVEEDORES--------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Proveedor IS
+    PROCEDURE LISTAR_PROVEEDORES(cur OUT SYS_REFCURSOR);
+    PROCEDURE INSERTAR_PROVEEDOR(
+        p_id_proveedor NUMBER,
+        p_nombre VARCHAR2,
+        p_telefono VARCHAR2,
+        p_direccion VARCHAR2,
+        p_correo VARCHAR2
+    );
+    PROCEDURE ACTUALIZAR_PROVEEDOR(
+        p_id_proveedor NUMBER,
+        p_nombre VARCHAR2,
+        p_telefono VARCHAR2,
+        p_direccion VARCHAR2,
+        p_correo VARCHAR2
+    );
+    PROCEDURE ELIMINAR_PROVEEDOR(
+        p_id_proveedor NUMBER
+    );
+END Pk_Procedimiento_Proveedor;
+
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Proveedor IS
+
+    -- Listar proveedores
+    PROCEDURE LISTAR_PROVEEDORES(cur OUT SYS_REFCURSOR) IS
+    BEGIN
+        OPEN cur FOR
+            SELECT ID_PROVEEDOR, NOMBRE, TELEFONO, DIRECCION, CORREO
+            FROM PROVEEDORES;
+    END LISTAR_PROVEEDORES;
+
+    -- Insertar proveedor
+    PROCEDURE INSERTAR_PROVEEDOR(
+        p_id_proveedor NUMBER,
+        p_nombre VARCHAR2,
+        p_telefono VARCHAR2,
+        p_direccion VARCHAR2,
+        p_correo VARCHAR2
+    ) IS
+    BEGIN
+        INSERT INTO PROVEEDORES (ID_PROVEEDOR, NOMBRE, TELEFONO, DIRECCION, CORREO)
+        VALUES (p_id_proveedor, p_nombre, p_telefono, p_direccion, p_correo);
+        COMMIT;
+    END INSERTAR_PROVEEDOR;
+
+    -- Actualizar proveedor
+    PROCEDURE ACTUALIZAR_PROVEEDOR(
+        p_id_proveedor NUMBER,
+        p_nombre VARCHAR2,
+        p_telefono VARCHAR2,
+        p_direccion VARCHAR2,
+        p_correo VARCHAR2
+    ) IS
+    BEGIN
+        UPDATE PROVEEDORES
+        SET NOMBRE = p_nombre,
+            TELEFONO = p_telefono,
+            DIRECCION = p_direccion,
+            CORREO = p_correo
+        WHERE ID_PROVEEDOR = p_id_proveedor;
+        COMMIT;
+    END ACTUALIZAR_PROVEEDOR;
+
+    -- Eliminar proveedor
+    PROCEDURE ELIMINAR_PROVEEDOR(
+        p_id_proveedor NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM PROVEEDORES
+        WHERE ID_PROVEEDOR = p_id_proveedor;
+        COMMIT;
+    END ELIMINAR_PROVEEDOR;
+
+END Pk_Procedimiento_Proveedor;
+
+
+--PAQUETE DE PROCEDIMEINTOS VENTAS ----------------------------------------------------------------
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Venta IS
+    PROCEDURE LISTAR_VENTAS(cur OUT SYS_REFCURSOR);
+    PROCEDURE INSERTAR_VENTA(
+        p_id_venta NUMBER,
+        p_id_cliente NUMBER,
+        p_id_empleado NUMBER,
+        p_fecha_venta DATE,
+        p_total DECIMAL
+    );
+    PROCEDURE ACTUALIZAR_VENTA(
+        p_id_venta NUMBER,
+        p_id_cliente NUMBER,
+        p_id_empleado NUMBER,
+        p_fecha_venta DATE,
+        p_total DECIMAL
+    );
+    PROCEDURE ELIMINAR_VENTA(
+        p_id_venta NUMBER
+    );
+    PROCEDURE INSERTAR_DETALLE_VENTA(
+        p_id_detalle NUMBER,
+        p_id_venta NUMBER,
+        p_id_producto NUMBER,
+        p_cantidad NUMBER,
+        p_subtotal DECIMAL
+    );
+END Pk_Procedimiento_Venta;
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Venta IS
+
+    -- Listar ventas
+    PROCEDURE LISTAR_VENTAS(cur OUT SYS_REFCURSOR) IS
+    BEGIN
+        OPEN cur FOR
+            SELECT ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL
+            FROM VENTAS;
+    END LISTAR_VENTAS;
+
+    -- Insertar venta
+    PROCEDURE INSERTAR_VENTA(
+        p_id_venta NUMBER,
+        p_id_cliente NUMBER,
+        p_id_empleado NUMBER,
+        p_fecha_venta DATE,
+        p_total DECIMAL
+    ) IS
+    BEGIN
+        INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+        VALUES (p_id_venta, p_id_cliente, p_id_empleado, p_fecha_venta, p_total);
+        COMMIT;
+    END INSERTAR_VENTA;
+
+    -- Actualizar venta
+    PROCEDURE ACTUALIZAR_VENTA(
+        p_id_venta NUMBER,
+        p_id_cliente NUMBER,
+        p_id_empleado NUMBER,
+        p_fecha_venta DATE,
+        p_total DECIMAL
+    ) IS
+    BEGIN
+        UPDATE VENTAS
+        SET ID_CLIENTE = p_id_cliente,
+            ID_EMPLEADO = p_id_empleado,
+            FECHA_VENTA = p_fecha_venta,
+            TOTAL = p_total
+        WHERE ID_VENTA = p_id_venta;
+        COMMIT;
+    END ACTUALIZAR_VENTA;
+
+    -- Eliminar venta
+    PROCEDURE ELIMINAR_VENTA(
+        p_id_venta NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM VENTAS WHERE ID_VENTA = p_id_venta;
+        COMMIT;
+    END ELIMINAR_VENTA;
+
+    -- Insertar detalle de venta
+    PROCEDURE INSERTAR_DETALLE_VENTA(
+        p_id_detalle NUMBER,
+        p_id_venta NUMBER,
+        p_id_producto NUMBER,
+        p_cantidad NUMBER,
+        p_subtotal DECIMAL
+    ) IS
+    BEGIN
+        INSERT INTO DETALLE_VENTAS (ID_DETALLE, ID_VENTA, ID_PRODUCTO, CANTIDAD, SUBTOTAL)
+        VALUES (p_id_detalle, p_id_venta, p_id_producto, p_cantidad, p_subtotal);
+        COMMIT;
+    END INSERTAR_DETALLE_VENTA;
+
+END Pk_Procedimiento_Venta;
+
+
+--PAQUETE DE PROCEDIMEINTOS DE PRODUCTOS-------------------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Producto IS
+    PROCEDURE INSERTAR_PRODUCTO(
+        p_id_producto NUMBER,
+        p_nombre VARCHAR2,
+        p_descripcion VARCHAR2,
+        p_precio DECIMAL,
+        p_stock NUMBER,
+        p_id_categoria NUMBER
+    );
+
+    PROCEDURE LISTAR_PRODUCTOS(cur OUT SYS_REFCURSOR);
+
+    PROCEDURE ACTUALIZAR_PRODUCTO(
+        p_id_producto NUMBER,
+        p_nombre VARCHAR2,
+        p_descripcion VARCHAR2,
+        p_precio DECIMAL,
+        p_stock NUMBER,
+        p_id_categoria NUMBER
+    );
+
+    PROCEDURE ELIMINAR_PRODUCTO(
+        p_id_producto NUMBER
+    );
+END Pk_Procedimiento_Producto;
+
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Producto IS
+
+    -- Insertar producto
+    PROCEDURE INSERTAR_PRODUCTO(
+        p_id_producto NUMBER,
+        p_nombre VARCHAR2,
+        p_descripcion VARCHAR2,
+        p_precio DECIMAL,
+        p_stock NUMBER,
+        p_id_categoria NUMBER
+    ) IS
+    BEGIN
+        INSERT INTO PRODUCTOS (ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA)
+        VALUES (p_id_producto, p_nombre, p_descripcion, p_precio, p_stock, p_id_categoria);
+        COMMIT;
+    END INSERTAR_PRODUCTO;
+
+    -- Listar productos
+    PROCEDURE LISTAR_PRODUCTOS(cur OUT SYS_REFCURSOR) IS
+    BEGIN
+        OPEN cur FOR
+            SELECT ID_PRODUCTO, NOMBRE, DESCRIPCION, PRECIO, STOCK, ID_CATEGORIA
+            FROM PRODUCTOS;
+    END LISTAR_PRODUCTOS;
+
+    -- Actualizar producto
+    PROCEDURE ACTUALIZAR_PRODUCTO(
+        p_id_producto NUMBER,
+        p_nombre VARCHAR2,
+        p_descripcion VARCHAR2,
+        p_precio DECIMAL,
+        p_stock NUMBER,
+        p_id_categoria NUMBER
+    ) IS
+    BEGIN
+        UPDATE PRODUCTOS
+        SET NOMBRE = p_nombre,
+            DESCRIPCION = p_descripcion,
+            PRECIO = p_precio,
+            STOCK = p_stock,
+            ID_CATEGORIA = p_id_categoria
+        WHERE ID_PRODUCTO = p_id_producto;
+        COMMIT;
+    END ACTUALIZAR_PRODUCTO;
+
+    -- Eliminar producto
+    PROCEDURE ELIMINAR_PRODUCTO(
+        p_id_producto NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM PRODUCTOS WHERE ID_PRODUCTO = p_id_producto;
+        COMMIT;
+    END ELIMINAR_PRODUCTO;
+
+END Pk_Procedimiento_Producto;
+
+
+--PAQUETE DE PROCEDIEMIENTOS DE LA TABLA COMPRAS
+
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Compra IS
+    PROCEDURE INSERTAR_COMPRA(
+        p_id_compra IN NUMBER,
+        p_id_proveedor IN NUMBER,
+        p_fecha_compra IN DATE,
+        p_total IN NUMBER
+    );
+
+    PROCEDURE ACTUALIZAR_COMPRA(
+        p_id_compra IN NUMBER,
+        p_id_proveedor IN NUMBER,
+        p_fecha_compra IN DATE,
+        p_total IN NUMBER
+    );
+
+    PROCEDURE ELIMINAR_COMPRA(
+        p_id_compra IN NUMBER
+    );
+
+    PROCEDURE LISTAR_COMPRAS(
+        p_cursor OUT SYS_REFCURSOR
+    );
+END Pk_Procedimiento_Compra;
+
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Compra IS
+
+    -- Insertar compra
+    PROCEDURE INSERTAR_COMPRA(
+        p_id_compra IN NUMBER,
+        p_id_proveedor IN NUMBER,
+        p_fecha_compra IN DATE,
+        p_total IN NUMBER
+    ) IS
+    BEGIN
+        INSERT INTO COMPRAS (ID_COMPRA, ID_PROVEEDOR, FECHA_COMPRA, TOTAL)
+        VALUES (p_id_compra, p_id_proveedor, p_fecha_compra, p_total);
+        COMMIT;
+    END INSERTAR_COMPRA;
+
+    -- Actualizar compra
+    PROCEDURE ACTUALIZAR_COMPRA(
+        p_id_compra IN NUMBER,
+        p_id_proveedor IN NUMBER,
+        p_fecha_compra IN DATE,
+        p_total IN NUMBER
+    ) IS
+    BEGIN
+        UPDATE COMPRAS
+        SET ID_PROVEEDOR = p_id_proveedor,
+            FECHA_COMPRA = p_fecha_compra,
+            TOTAL = p_total
+        WHERE ID_COMPRA = p_id_compra;
+        COMMIT;
+    END ACTUALIZAR_COMPRA;
+
+    -- Eliminar compra
+    PROCEDURE ELIMINAR_COMPRA(
+        p_id_compra IN NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM COMPRAS WHERE ID_COMPRA = p_id_compra;
+        COMMIT;
+    END ELIMINAR_COMPRA;
+
+    -- Listar compras
+    PROCEDURE LISTAR_COMPRAS(
+        p_cursor OUT SYS_REFCURSOR
+    ) IS
+    BEGIN
+        OPEN p_cursor FOR
+            SELECT
+                A1.ID_COMPRA,
+                A1.ID_PROVEEDOR,
+                A1.FECHA_COMPRA,
+                A1.TOTAL
+            FROM HR.COMPRAS A1;
+    END LISTAR_COMPRAS;
+
+END Pk_Procedimiento_Compra;
+
+
+--PAQUETE DE PROCEDIMEINTOS DE LA TABLA EMPLEADOS------------------------------------------------------------------
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Empleado IS
+    PROCEDURE INSERTAR_EMPLEADO(
+        p_id_empleado IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_cargo IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_correo IN VARCHAR2
+    );
+
+    PROCEDURE ACTUALIZAR_EMPLEADO(
+        p_id_empleado IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_cargo IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_correo IN VARCHAR2
+    );
+
+    PROCEDURE ELIMINAR_EMPLEADO(
+        p_id_empleado IN NUMBER
+    );
+
+    PROCEDURE LISTAR_EMPLEADOS(
+        p_cursor OUT SYS_REFCURSOR
+    );
+END Pk_Procedimiento_Empleado;
+
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Empleado IS
+
+    -- Insertar empleado
+    PROCEDURE INSERTAR_EMPLEADO(
+        p_id_empleado IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_cargo IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_correo IN VARCHAR2
+    ) IS
+    BEGIN
+        INSERT INTO EMPLEADOS (ID_EMPLEADO, NOMBRE, CARGO, TELEFONO, CORREO)
+        VALUES (p_id_empleado, p_nombre, p_cargo, p_telefono, p_correo);
+        COMMIT;
+    END INSERTAR_EMPLEADO;
+
+    -- Actualizar empleado
+    PROCEDURE ACTUALIZAR_EMPLEADO(
+        p_id_empleado IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_cargo IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_correo IN VARCHAR2
+    ) IS
+    BEGIN
+        UPDATE EMPLEADOS
+        SET NOMBRE = p_nombre,
+            CARGO = p_cargo,
+            TELEFONO = p_telefono,
+            CORREO = p_correo
+        WHERE ID_EMPLEADO = p_id_empleado;
+        COMMIT;
+    END ACTUALIZAR_EMPLEADO;
+
+    -- Eliminar empleado
+    PROCEDURE ELIMINAR_EMPLEADO(
+        p_id_empleado IN NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM EMPLEADOS WHERE ID_EMPLEADO = p_id_empleado;
+        COMMIT;
+    END ELIMINAR_EMPLEADO;
+
+    -- Listar empleados
+    PROCEDURE LISTAR_EMPLEADOS(
+        p_cursor OUT SYS_REFCURSOR
+    ) IS
+    BEGIN
+        OPEN p_cursor FOR
+            SELECT
+                A1.ID_EMPLEADO,
+                A1.NOMBRE,
+                A1.CARGO,
+                A1.TELEFONO,
+                A1.CORREO
+            FROM EMPLEADOS A1;
+    END LISTAR_EMPLEADOS;
+
+END Pk_Procedimiento_Empleado;
+ 
+--PAQUETE DE PROCEDIMIENTOS DE LA TABLA CLIENTES--------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Cliente IS
+    PROCEDURE INSERTAR_CLIENTE(
+        p_id_cliente IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_direccion IN VARCHAR2,
+        p_correo IN VARCHAR2
+    );
+
+    PROCEDURE ACTUALIZAR_CLIENTE(
+        p_id_cliente IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_direccion IN VARCHAR2,
+        p_correo IN VARCHAR2
+    );
+
+    PROCEDURE ELIMINAR_CLIENTE(
+        p_id_cliente IN NUMBER
+    );
+
+    PROCEDURE LISTAR_CLIENTES(
+        p_cursor OUT SYS_REFCURSOR
+    );
+END Pk_Procedimiento_Cliente;
+
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Cliente IS
+
+    -- Insertar cliente
+    PROCEDURE INSERTAR_CLIENTE(
+        p_id_cliente IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_direccion IN VARCHAR2,
+        p_correo IN VARCHAR2
+    ) IS
+    BEGIN
+        INSERT INTO CLIENTES (ID_CLIENTE, NOMBRE, TELEFONO, DIRECCION, CORREO)
+        VALUES (p_id_cliente, p_nombre, p_telefono, p_direccion, p_correo);
+        COMMIT;
+    END INSERTAR_CLIENTE;
+
+    -- Actualizar cliente
+    PROCEDURE ACTUALIZAR_CLIENTE(
+        p_id_cliente IN NUMBER,
+        p_nombre IN VARCHAR2,
+        p_telefono IN VARCHAR2,
+        p_direccion IN VARCHAR2,
+        p_correo IN VARCHAR2
+    ) IS
+    BEGIN
+        UPDATE CLIENTES
+        SET NOMBRE = p_nombre,
+            TELEFONO = p_telefono,
+            DIRECCION = p_direccion,
+            CORREO = p_correo
+        WHERE ID_CLIENTE = p_id_cliente;
+        COMMIT;
+    END ACTUALIZAR_CLIENTE;
+
+    -- Eliminar cliente
+    PROCEDURE ELIMINAR_CLIENTE(
+        p_id_cliente IN NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM CLIENTES WHERE ID_CLIENTE = p_id_cliente;
+        COMMIT;
+    END ELIMINAR_CLIENTE;
+
+    -- Listar clientes
+    PROCEDURE LISTAR_CLIENTES(
+        p_cursor OUT SYS_REFCURSOR
+    ) IS
+    BEGIN
+        OPEN p_cursor FOR
+            SELECT
+                A1.ID_CLIENTE AS ID_CLIENTE,
+                A1.NOMBRE AS NOMBRE,
+                A1.TELEFONO AS TELEFONO,
+                A1.DIRECCION AS DIRECCION,
+                A1.CORREO AS CORREO
+            FROM CLIENTES A1;
+    END LISTAR_CLIENTES;
+
+END Pk_Procedimiento_Cliente;
+
+
+--PAQUETE DE PROCEDIMIENTOS DE LA TABLA VENTAS------------------------------------------------------ 
+
+CREATE OR REPLACE PACKAGE Pk_Procedimiento_Venta IS
+    PROCEDURE INSERTAR_VENTA(
+        p_id_venta IN NUMBER,
+        p_id_cliente IN NUMBER,
+        p_id_empleado IN NUMBER,
+        p_fecha_venta IN DATE,
+        p_total IN NUMBER
+    );
+
+    PROCEDURE ACTUALIZAR_VENTA(
+        p_id_venta IN NUMBER,
+        p_id_cliente IN NUMBER,
+        p_id_empleado IN NUMBER,
+        p_fecha_venta IN DATE,
+        p_total IN NUMBER
+    );
+
+    PROCEDURE ELIMINAR_VENTA(
+        p_id_venta IN NUMBER
+    );
+
+    PROCEDURE LISTAR_VENTAS(
+        p_cursor OUT SYS_REFCURSOR
+    );
+END Pk_Procedimiento_Venta;
+
+
+CREATE OR REPLACE PACKAGE BODY Pk_Procedimiento_Venta IS
+
+    -- Insertar venta
+    PROCEDURE INSERTAR_VENTA(
+        p_id_venta IN NUMBER,
+        p_id_cliente IN NUMBER,
+        p_id_empleado IN NUMBER,
+        p_fecha_venta IN DATE,
+        p_total IN NUMBER
+    ) IS
+    BEGIN
+        INSERT INTO VENTAS (ID_VENTA, ID_CLIENTE, ID_EMPLEADO, FECHA_VENTA, TOTAL)
+        VALUES (p_id_venta, p_id_cliente, p_id_empleado, p_fecha_venta, p_total);
+        COMMIT;
+    END INSERTAR_VENTA;
+
+    -- Actualizar venta
+    PROCEDURE ACTUALIZAR_VENTA(
+        p_id_venta IN NUMBER,
+        p_id_cliente IN NUMBER,
+        p_id_empleado IN NUMBER,
+        p_fecha_venta IN DATE,
+        p_total IN NUMBER
+    ) IS
+    BEGIN
+        UPDATE VENTAS
+        SET ID_CLIENTE = p_id_cliente,
+            ID_EMPLEADO = p_id_empleado,
+            FECHA_VENTA = p_fecha_venta,
+            TOTAL = p_total
+        WHERE ID_VENTA = p_id_venta;
+        COMMIT;
+    END ACTUALIZAR_VENTA;
+
+    -- Eliminar venta
+    PROCEDURE ELIMINAR_VENTA(
+        p_id_venta IN NUMBER
+    ) IS
+    BEGIN
+        DELETE FROM VENTAS WHERE ID_VENTA = p_id_venta;
+        COMMIT;
+    END ELIMINAR_VENTA;
+
+    -- Listar ventas
+    PROCEDURE LISTAR_VENTAS(
+        p_cursor OUT SYS_REFCURSOR
+    ) IS
+    BEGIN
+        OPEN p_cursor FOR
+            SELECT
+                A1.ID_VENTA AS ID_VENTA,
+                A1.ID_CLIENTE AS ID_CLIENTE,
+                A1.ID_EMPLEADO AS ID_EMPLEADO,
+                A1.FECHA_VENTA AS FECHA_VENTA,
+                A1.TOTAL AS TOTAL
+            FROM VENTAS A1;
+    END LISTAR_VENTAS;
+
+END Pk_Procedimiento_Venta;
+
+
+--PAQUETE DE LOS TRIGGERS UTILIZADOS---------------------------------------------------------
+CREATE OR REPLACE PACKAGE PKG_TRIGGERS_BASICOS AS
+
+    FUNCTION ES_CORREO_VALIDO(p_correo VARCHAR2) RETURN BOOLEAN;
+
+    PROCEDURE AUDITAR_VENTA(p_id_venta NUMBER);
+
+    PROCEDURE VALIDAR_PRECIO(p_precio NUMBER);
+
+    FUNCTION TIENE_VENTAS(p_id_empleado NUMBER) RETURN BOOLEAN;
+END PKG_TRIGGERS_BASICOS;
+/
+
+
+CREATE OR REPLACE PACKAGE BODY PKG_TRIGGERS_BASICOS AS
+
+    FUNCTION ES_CORREO_VALIDO(p_correo VARCHAR2) RETURN BOOLEAN IS
+    BEGIN
+        RETURN REGEXP_LIKE(p_correo, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$');
+    END;
+
+    PROCEDURE AUDITAR_VENTA(p_id_venta NUMBER) IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('Nueva venta registrada: ID = ' || p_id_venta);
+    END;
+
+    PROCEDURE VALIDAR_PRECIO(p_precio NUMBER) IS
+    BEGIN
+        IF p_precio < 0 THEN
+            RAISE_APPLICATION_ERROR(-20001, 'El precio no puede ser negativo.');
+        END IF;
+    END;
+
+    FUNCTION TIENE_VENTAS(p_id_empleado NUMBER) RETURN BOOLEAN IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count FROM VENTAS WHERE ID_EMPLEADO = p_id_empleado;
+        RETURN v_count > 0;
+    END;
+
+END PKG_TRIGGERS_BASICOS;
+/
+
+
+
+
+
+
+
