@@ -136,6 +136,16 @@ BEGIN
     COMMIT;
 END;
 
+--DetalleVentas-----------------------------
+
+CREATE OR REPLACE PROCEDURE LISTAR_DETALLE_VENTA (cur OUT SYS_REFCURSOR) AS
+BEGIN
+    OPEN cur FOR
+    SELECT ID_DETALLE, ID_VENTA, ID_PRODUCTO, CANTIDAD, SUBTOTAL
+    FROM DETALLE_VENTAS;
+END;
+
+
 CREATE OR REPLACE PROCEDURE INSERTAR_DETALLE_VENTA(
     p_id_detalle NUMBER,
     p_id_venta NUMBER,
@@ -148,6 +158,36 @@ BEGIN
     VALUES (p_id_detalle, p_id_venta, p_id_producto, p_cantidad, p_subtotal);
     COMMIT;
 END;
+
+CREATE OR REPLACE PROCEDURE ACTUALIZAR_DETALLE_VENTA(
+    p_id_detalle NUMBER,
+    p_id_venta NUMBER,
+    p_id_producto NUMBER,
+    p_cantidad NUMBER,
+    p_subtotal DECIMAL
+) AS
+BEGIN
+    UPDATE DETALLE_VENTAS
+    SET ID_VENTA = p_id_venta,
+        ID_PRODUCTO = p_id_producto,
+        CANTIDAD = p_cantidad,
+        SUBTOTAL = p_subtotal
+    WHERE ID_DETALLE = p_id_detalle;
+    COMMIT;
+END;
+
+CREATE OR REPLACE PROCEDURE ELIMINAR_DETALLE_VENTA(p_id_detalle NUMBER) AS
+BEGIN
+    DELETE FROM DETALLE_VENTAS WHERE ID_DETALLE = p_id_detalle;
+    COMMIT;
+END;
+
+INSERT INTO DETALLE_VENTAS (ID_DETALLE, ID_VENTA, ID_PRODUCTO, CANTIDAD, SUBTOTAL) 
+VALUES (1524, 1002, 3, 1, 3542);
+
+INSERT INTO DETALLE_VENTAS (ID_DETALLE, ID_VENTA, ID_PRODUCTO, CANTIDAD, SUBTOTAL) 
+VALUES (1425, 1003, 2, 1, 5400);
+
 
 --PROCEDIMIENTOS PRODUCTOS-------------------------------------------------------------------------------
 
