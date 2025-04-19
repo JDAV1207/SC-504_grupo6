@@ -76,6 +76,12 @@ public class Menu extends javax.swing.JFrame {
         CrearProducto = new javax.swing.JButton();
         EditarProducto = new javax.swing.JButton();
         BorrarProducto = new javax.swing.JButton();
+        DetVentas = new javax.swing.JPanel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tablaDetVentas = new javax.swing.JTable();
+        CrearDetVentas = new javax.swing.JButton();
+        EditarDetVentas = new javax.swing.JButton();
+        EliminarDetVentas = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -493,6 +499,63 @@ public class Menu extends javax.swing.JFrame {
         );
 
         jTabbedPane1.addTab("Productos", jPanel2);
+
+        tablaDetVentas.setModel(project_ferretech.ClienteDAO.obtenerClientes());
+        tablaDetVentas.setName("FERRETECH"); // NOI18N
+        jScrollPane8.setViewportView(tablaDetVentas);
+
+        CrearDetVentas.setText("Crear");
+        CrearDetVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearDetVentasActionPerformed(evt);
+            }
+        });
+
+        EditarDetVentas.setText("Editar");
+        EditarDetVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarDetVentasActionPerformed(evt);
+            }
+        });
+
+        EliminarDetVentas.setText("Eliminar");
+        EliminarDetVentas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarDetVentasActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout DetVentasLayout = new javax.swing.GroupLayout(DetVentas);
+        DetVentas.setLayout(DetVentasLayout);
+        DetVentasLayout.setHorizontalGroup(
+            DetVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DetVentasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 491, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(DetVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(EditarDetVentas)
+                    .addComponent(EliminarDetVentas)
+                    .addComponent(CrearDetVentas))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        DetVentasLayout.setVerticalGroup(
+            DetVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DetVentasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DetVentasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                    .addGroup(DetVentasLayout.createSequentialGroup()
+                        .addComponent(CrearDetVentas)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarDetVentas)
+                        .addGap(18, 18, 18)
+                        .addComponent(EliminarDetVentas)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Detalle Ventas", DetVentas);
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 102));
 
@@ -1186,6 +1249,88 @@ public class Menu extends javax.swing.JFrame {
     }        
     }//GEN-LAST:event_BorrarProductoActionPerformed
 
+    private void CrearDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearDetVentasActionPerformed
+        try {
+            int idVenta = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID de la venta:"));
+            int idProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto:"));
+            int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad:"));
+            double precioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio unitario:"));
+
+            try (Connection con = ConexionOracle.getConnection();
+                CallableStatement stmt = con.prepareCall("{CALL INSERTAR_DETALLE_VENTA(?, ?, ?, ?, ?)}")) {
+
+                stmt.setInt(1, obtenerNuevoID()); // Genera nuevo ID para el detalle
+                stmt.setInt(2, idVenta);
+                stmt.setInt(3, idProducto);
+                stmt.setInt(4, cantidad);
+                stmt.setDouble(5, precioUnitario);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Detalle de venta agregado.");
+                tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al agregar el detalle de venta.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Entrada inválida. Por favor ingrese solo números.");
+        }
+    }//GEN-LAST:event_CrearDetVentasActionPerformed
+
+    private void EditarDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarDetVentasActionPerformed
+        int fila = tablaDetVentas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un detalle de venta.");
+            return;
+        }
+
+        int id = (int) tablaDetVentas.getValueAt(fila, 0);
+        int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", tablaDetVentas.getValueAt(fila, 3)));
+        double nuevoPrecioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio unitario:", tablaDetVentas.getValueAt(fila, 4)));
+
+        try (Connection con = ConexionOracle.getConnection();
+            CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_DETALLE_VENTA(?, ?, ?)}")) {
+
+            stmt.setInt(1, id);
+            stmt.setInt(2, nuevaCantidad);
+            stmt.setDouble(3, nuevoPrecioUnitario);
+            stmt.execute();
+
+            JOptionPane.showMessageDialog(this, "Detalle de venta actualizado.");
+            tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar el detalle de venta.");
+        }
+    }//GEN-LAST:event_EditarDetVentasActionPerformed
+
+    private void EliminarDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarDetVentasActionPerformed
+        int fila = tablaDetVentas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccione un detalle de venta.");
+            return;
+        }
+
+        int id = (int) tablaDetVentas.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este detalle de venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection();
+                CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_DETALLE_VENTA(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(this, "Detalle de venta eliminado.");
+                tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error al eliminar el detalle de venta.");
+            }
+        }
+    }//GEN-LAST:event_EliminarDetVentasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1233,19 +1378,23 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton CrearCategoria;
     private javax.swing.JButton CrearClientes;
     private javax.swing.JButton CrearCompra;
+    private javax.swing.JButton CrearDetVentas;
     private javax.swing.JButton CrearEmpleado;
     private javax.swing.JButton CrearProducto;
     private javax.swing.JButton CrearProveedor;
     private javax.swing.JButton CrearVentas;
+    private javax.swing.JPanel DetVentas;
     private javax.swing.JButton EditarCategoria;
     private javax.swing.JButton EditarClientes;
     private javax.swing.JButton EditarCompra;
+    private javax.swing.JButton EditarDetVentas;
     private javax.swing.JButton EditarEmpleado;
     private javax.swing.JButton EditarProducto;
     private javax.swing.JButton EditarProveedor;
     private javax.swing.JButton EditarVentas;
     private javax.swing.JButton EliminarClientes;
     private javax.swing.JButton EliminarCompra;
+    private javax.swing.JButton EliminarDetVentas;
     private javax.swing.JButton EliminarEmpleado;
     private javax.swing.JPanel Empleados;
     private javax.swing.JPanel Ventas;
@@ -1260,10 +1409,12 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable tablaCategorias;
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaCompras;
+    private javax.swing.JTable tablaDetVentas;
     private javax.swing.JTable tablaEmpleados;
     private javax.swing.JTable tablaProducto;
     private javax.swing.JTable tablaProveedor;
