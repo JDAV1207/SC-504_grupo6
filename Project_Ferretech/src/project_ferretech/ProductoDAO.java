@@ -48,4 +48,71 @@ public class ProductoDAO {
         }
         return modelo;
     }
+
+    //INSERTAR
+    public static boolean insertarProducto(int id, String nombre, String descripcion, double precio, int stock,
+             int idCategoria) {
+        try (Connection con = ConexionOracle.getConnection()) {
+            if (con == null) {
+                System.err.println("No se pudo establecer conexión.");
+                return false;
+            }
+            try (CallableStatement stmt = con.prepareCall("{call INSERTAR_PRODUCTO(?, ?, ?, ?, ?)}")) {
+                setInt(1, id);
+                stmt.setString(2, nombre);
+                stmt.setString(3, descripcion);
+                stmt.setDouble(4, precio);
+                setInt(5, stock);
+                setInt(6, idCategoria);
+                stmt.execute();
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al insertar proveedor: " + e.getMessage());
+            return false;
+        }
+    }
+
+    //Editar PRODUCTOS
+    public static boolean actualizarProducto(int id, String nombre, String descripcion, double precio, int stock,
+             int idCategoria) {
+        try (Connection con = ConexionOracle.getConnection()) {
+            if (con == null) {
+                System.err.println("No se pudo establecer conexión.");
+                return false;
+            }
+            try (CallableStatement stmt = con.prepareCall("{call INSERTAR_PRODUCTO(?, ?, ?, ?, ?)}")) {
+                setInt(1, id);
+                stmt.setString(2, nombre);
+                stmt.setString(3, descripcion);
+                stmt.setDouble(4, precio);
+                setInt(5, stock);
+                setInt(6, idCategoria);
+                stmt.execute();
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar el producto: " + e.getMessage());
+            return false;
+        }
+    }
+
+    //ELIMINAR PROD
+    public static boolean eliminarProducto(int id) {
+        try (Connection con = ConexionOracle.getConnection()) {
+            if (con == null) {
+                System.err.println("No se pudo establecer conexión.");
+                return false;
+            }
+            try (CallableStatement stmt = con.prepareCall("{call ELIMINAR_PRODUCTO(?, ?, ?, ?, ?)}")) {
+                setInt(1, id);
+                stmt.execute();
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar el producto: " + e.getMessage());
+            return false;
+        }
+    }
+
 }

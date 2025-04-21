@@ -609,20 +609,17 @@ public class Menu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione una categoría.");
             return;
         }
-
         int id = (int) tablaCategorias.getValueAt(fila, 0);
 
         int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
+            boolean eliminada = CategoriaDAO.eliminarCategoria(id);
 
-                stmt.setInt(1, id);
-                stmt.execute();
-
+            if (eliminada) {
                 JOptionPane.showMessageDialog(this, "Categoría eliminada.");
                 tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar la categoría.");
             }
         }
     }//GEN-LAST:event_BorrarCategoriaActionPerformed
@@ -633,21 +630,17 @@ public class Menu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione una categoría.");
             return;
         }
-
         int id = (int) tablaCategorias.getValueAt(fila, 0);
         String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaCategorias.getValueAt(fila, 1));
 
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_CATEGORIA(?,?)}")) {
+            boolean actualizada = CategoriaDAO.actualizarCategoria(id, nuevoNombre);
 
-                stmt.setInt(1, id);
-                stmt.setString(2, nuevoNombre);
-                stmt.execute();
-
+            if (actualizada) {
                 JOptionPane.showMessageDialog(this, "Categoría actualizada.");
                 tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar la categoría.");
             }
         }
     }//GEN-LAST:event_EditarCategoriaActionPerformed
@@ -656,16 +649,13 @@ public class Menu extends javax.swing.JFrame {
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la categoría:");
 
         if (nombre != null && !nombre.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CATEGORIA(?,?)}")) {
+            boolean creada = CategoriaDAO.insertarCategoria(obtenerNuevoID(), nombre);
 
-                stmt.setInt(1, obtenerNuevoID());
-                stmt.setString(2, nombre);
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Categoría creada.");
+            if (creada) {
+                JOptionPane.showMessageDialog(this, "Categoría actualizada.");
                 tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al crear la categoría.");
             }
         }
     }//GEN-LAST:event_CrearCategoriaActionPerformed
@@ -1066,21 +1056,14 @@ public class Menu extends javax.swing.JFrame {
                 && direccion != null && !direccion.trim().isEmpty()
                 && correo != null && !correo.trim().isEmpty()) {
 
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
+            int id = obtenerNuevoID();
 
-                stmt.setInt(1, obtenerNuevoID());
-                stmt.setString(2, nombre);
-                stmt.setString(3, telefono);
-                stmt.setString(4, direccion);
-                stmt.setString(5, correo);
-                stmt.execute();
+            boolean resultado = ProveedorDAO.insertarProveedor(id, nombre, telefono, direccion, correo);
 
+            if (resultado) {
                 JOptionPane.showMessageDialog(this, "Proveedor agregado.");
-
                 tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
                 JOptionPane.showMessageDialog(this, "Error al agregar el proveedor.");
             }
         } else {
@@ -1102,19 +1085,13 @@ public class Menu extends javax.swing.JFrame {
         String nuevoCorreo = JOptionPane.showInputDialog("Nuevo Correo:", tablaProveedor.getValueAt(fila, 4));
 
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty() && nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
+            boolean actualizado = ProveedorDAO.actualizarProveedor(id, nuevoNombre, nuevoTelefono, nuevoDireccion, nuevoCorreo);
 
-                stmt.setInt(1, id);
-                stmt.setString(2, nuevoNombre);
-                stmt.setString(3, nuevoTelefono);
-                stmt.setString(4, nuevoDireccion);
-                stmt.setString(5, nuevoCorreo);
-                stmt.execute();
-
+            if (actualizado) {
                 JOptionPane.showMessageDialog(this, "Proveedor actualizado.");
                 tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar proveedor.");
             }
         }
     }//GEN-LAST:event_EditarProveedorActionPerformed
@@ -1130,15 +1107,13 @@ public class Menu extends javax.swing.JFrame {
 
         int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PROVEEDOR(?)}")) {
+            boolean eliminado = ProveedorDAO.eliminarProveedor(id);
 
-                stmt.setInt(1, id);
-                stmt.execute();
-
+            if (eliminado) {
                 JOptionPane.showMessageDialog(this, "Proveedor eliminado.");
                 tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al eliminar proveedor.");
             }
         }
     }//GEN-LAST:event_BorrarProveedorActionPerformed
@@ -1157,22 +1132,23 @@ public class Menu extends javax.swing.JFrame {
                 && stockStr != null && !stockStr.trim().isEmpty()
                 && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
 
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
-
-                stmt.setInt(1, obtenerNuevoID());
-                stmt.setString(2, nombre);
-                stmt.setString(3, descripcion);
-                stmt.setDouble(4, Double.parseDouble(precioStr));
-                stmt.setInt(5, Integer.parseInt(stockStr));
-                stmt.setInt(6, Integer.parseInt(idCategoriaStr));
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Producto agregado correctamente.");
-                tablaProducto.setModel(ProductoDAO.obtenerProductos());
-
-            } catch (SQLException e) {
+            try {
+                int id = obtenerNuevoID();
+                double precio = Double.parseDouble(precioStr);
+                int stock = Integer.parseInt(StockStr);
+                int idCategoria = Integer.parseInt(idCategoriaStr);
+                
+                boolean exito = ProductoDAO.insertarProducto(id, nombre, descripcion, precio, stock, idCategoria);
+                
+                if(exito) {
+                    JOptionPane.showMessageDialog(this, "Producto agregado con exito.");
+                tablaProveedor.setModel(ProductoDAO.obtenerProductos());
+                } else {
+                JOptionPane.showMessageDialog(this, "Error al agregar el producto");
+                }
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al agregar el producto.");
+                JOptionPane.showMessageDialog(this, "Por favor ingresar datos numericos.");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los espacios.");
@@ -1199,25 +1175,25 @@ public class Menu extends javax.swing.JFrame {
                 && nuevoStockStr != null && !nuevoStockStr.trim().isEmpty()
                 && nuevaCategoriaStr != null && !nuevaCategoriaStr.trim().isEmpty()) {
 
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
-
-                stmt.setInt(1, id);
-                stmt.setString(2, nuevoNombre);
-                stmt.setString(3, nuevaDescripcion);
-                stmt.setDouble(4, Double.parseDouble(nuevoPrecioStr));
-                stmt.setInt(5, Integer.parseInt(nuevoStockStr));
-                stmt.setInt(6, Integer.parseInt(nuevaCategoriaStr));
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Producto actualizado.");
-                tablaProducto.setModel(ProductoDAO.obtenerProductos()); // Actualizar tabla
-
-            } catch (SQLException e) {
+            try {
+                double precio = Double.parseDouble(nuevoPrecioStr);
+                int stock = Integer.parseInt(nuevoStockStr);
+                int idCategoria = Integer.parseInt(nuevaCategoriaStr);
+                
+                boolean exito = ProductoDAO.actualizarProducto(id, nuevoNombre, nuevaDescripcion, precio, stock, idCategoria);
+                
+                if(exito) {
+                    JOptionPane.showMessageDialog(this, "Producto actualizado con exito.");
+                tablaProveedor.setModel(ProductoDAO.obtenerProductos());
+                } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar el producto");
+                }
+            } catch (NumberFormatException e) {
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al actualizar el producto.");
+                JOptionPane.showMessageDialog(this, "Por favor ingresar datos validos.");
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los espacios.");
         }
     }//GEN-LAST:event_EditarProductoActionPerformed
 
@@ -1228,25 +1204,22 @@ public class Menu extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione un producto.");
             return;
         }
-        
+
         int id = (int) tablaProducto.getValueAt(fila, 0);
         int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        
+
         if (confirm == JOptionPane.YES_OPTION) {
-        try (Connection con = ConexionOracle.getConnection(); 
-             CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PRODUCTO(?)}")) {
+            boolean exito = ProductoDAO.eliminarProducto(id);
 
-            stmt.setInt(1, id);
-            stmt.execute();
+            if (exito) {
 
-            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
-            tablaProducto.setModel(ProductoDAO.obtenerProductos()); 
+                JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+                tablaProducto.setModel(ProductoDAO.obtenerProductos());
+            } else {
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al eliminar el producto.");
-        }
-    }        
+                JOptionPane.showMessageDialog(this, "Error al eliminar el producto.");
+            }
+        }      
     }//GEN-LAST:event_BorrarProductoActionPerformed
 
     private void CrearDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearDetVentasActionPerformed
@@ -1256,21 +1229,13 @@ public class Menu extends javax.swing.JFrame {
             int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad:"));
             double precioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio unitario:"));
 
-            try (Connection con = ConexionOracle.getConnection();
-                CallableStatement stmt = con.prepareCall("{CALL INSERTAR_DETALLE_VENTA(?, ?, ?, ?, ?)}")) {
+            boolean creado = DetalleVentasDAO.insertarDetalleVenta(idVenta, idVenta, idProducto, cantidad, precioUnitario);
 
-                stmt.setInt(1, obtenerNuevoID()); // Genera nuevo ID para el detalle
-                stmt.setInt(2, idVenta);
-                stmt.setInt(3, idProducto);
-                stmt.setInt(4, cantidad);
-                stmt.setDouble(5, precioUnitario);
-                stmt.execute();
-
+            if (creado) {
                 JOptionPane.showMessageDialog(this, "Detalle de venta agregado.");
                 tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
+            } else {
 
-            } catch (SQLException e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error al agregar el detalle de venta.");
             }
         } catch (NumberFormatException e) {
@@ -1280,29 +1245,23 @@ public class Menu extends javax.swing.JFrame {
 
     private void EditarDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarDetVentasActionPerformed
         int fila = tablaDetVentas.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un detalle de venta.");
-            return;
-        }
+if (fila == -1) {
+    JOptionPane.showMessageDialog(this, "Seleccione un detalle de venta.");
+    return;
+}
 
-        int id = (int) tablaDetVentas.getValueAt(fila, 0);
-        int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", tablaDetVentas.getValueAt(fila, 3)));
-        double nuevoPrecioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio unitario:", tablaDetVentas.getValueAt(fila, 4)));
+int id = (int) tablaDetVentas.getValueAt(fila, 0);
+int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", tablaDetVentas.getValueAt(fila, 3)));
+double nuevoPrecioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio unitario:", tablaDetVentas.getValueAt(fila, 4)));
 
-        try (Connection con = ConexionOracle.getConnection();
-            CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_DETALLE_VENTA(?, ?, ?)}")) {
+boolean actualizado = DetalleVentasDAO.actualizarDetalleVenta(id, nuevaCantidad, nuevoPrecioUnitario);
 
-            stmt.setInt(1, id);
-            stmt.setInt(2, nuevaCantidad);
-            stmt.setDouble(3, nuevoPrecioUnitario);
-            stmt.execute();
-
-            JOptionPane.showMessageDialog(this, "Detalle de venta actualizado.");
-            tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al actualizar el detalle de venta.");
-        }
+if (actualizado) {
+    JOptionPane.showMessageDialog(this, "Detalle de venta actualizado.");
+    tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
+} else {
+    JOptionPane.showMessageDialog(this, "Error al actualizar el detalle de venta.");
+}
     }//GEN-LAST:event_EditarDetVentasActionPerformed
 
     private void EliminarDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarDetVentasActionPerformed
@@ -1316,19 +1275,15 @@ public class Menu extends javax.swing.JFrame {
 
         int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este detalle de venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection();
-                CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_DETALLE_VENTA(?)}")) {
+            boolean eliminado = DetalleVentasDAO.eliminarDetalleVenta(id);  
 
-                stmt.setInt(1, id);
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Detalle de venta eliminado.");
-                tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
-            } catch (SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error al eliminar el detalle de venta.");
+            if (eliminado){
+            JOptionPane.showMessageDialog(this, "Detalle de venta eliminado.");
+    tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
+} else {
+    JOptionPane.showMessageDialog(this, "Error al eliminar el detalle de venta.");
+    }
             }
-        }
     }//GEN-LAST:event_EliminarDetVentasActionPerformed
 
     /**
