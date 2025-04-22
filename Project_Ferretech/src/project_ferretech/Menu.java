@@ -3,6 +3,7 @@ package project_ferretech;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
+import javax.swing.table.DefaultTableModel;
 
 public class Menu extends javax.swing.JFrame {
 
@@ -604,622 +605,99 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BorrarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarCategoriaActionPerformed
-        int fila = tablaCategorias.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una categoría.");
-            return;
-        }
-        int id = (int) tablaCategorias.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean eliminada = CategoriaDAO.eliminarCategoria(id);
-
-            if (eliminada) {
-                JOptionPane.showMessageDialog(this, "Categoría eliminada.");
-                tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al eliminar la categoría.");
-            }
-        }
+        CategoriaDAO.eliminarCategoriaDesdeTabla(tablaCategorias, this);
     }//GEN-LAST:event_BorrarCategoriaActionPerformed
 
     private void EditarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCategoriaActionPerformed
-        int fila = tablaCategorias.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una categoría.");
-            return;
-        }
-        int id = (int) tablaCategorias.getValueAt(fila, 0);
-        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaCategorias.getValueAt(fila, 1));
-
-        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-            boolean actualizada = CategoriaDAO.actualizarCategoria(id, nuevoNombre);
-
-            if (actualizada) {
-                JOptionPane.showMessageDialog(this, "Categoría actualizada.");
-                tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al actualizar la categoría.");
-            }
-        }
+        CategoriaDAO.actualizarCategoriaDesdeTabla(tablaCategorias, this);
     }//GEN-LAST:event_EditarCategoriaActionPerformed
 
     private void CrearCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCategoriaActionPerformed
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la categoría:");
-
-        if (nombre != null && !nombre.trim().isEmpty()) {
-            boolean creada = CategoriaDAO.insertarCategoria(obtenerNuevoID(), nombre);
-
-            if (creada) {
-                JOptionPane.showMessageDialog(this, "Categoría actualizada.");
-                tablaCategorias.setModel(CategoriaDAO.obtenerCategorias());
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al crear la categoría.");
-            }
-        }
+         CategoriaDAO.crearCategoriaDesdeInput(tablaCategorias, this);
     }//GEN-LAST:event_CrearCategoriaActionPerformed
 
     private void CrearCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCompraActionPerformed
-        int idProveedor;
-        double total;
-        String fechaCompra;
-
-        try {
-            idProveedor = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del proveedor:"));
-            fechaCompra = JOptionPane.showInputDialog("Ingrese la fecha de compra (YYYY-MM-DD):");
-            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el total de la compra:"));
-
-            if (fechaCompra != null && !fechaCompra.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_COMPRA(?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, obtenerNuevoID());
-                    stmt.setInt(2, idProveedor);
-                    stmt.setDate(3, Date.valueOf(fechaCompra));
-                    stmt.setDouble(4, total);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Compra creada.");
-                    tablaCompras.setModel(CompraDAO.obtenerCompras());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        CompraDAO.crearCompraDesdeFormulario(tablaCompras, this);
     }//GEN-LAST:event_CrearCompraActionPerformed
 
     private void EditarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCompraActionPerformed
-        int fila = tablaCompras.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una compra.");
-            return;
-        }
-
-        int id = (int) tablaCompras.getValueAt(fila, 0);
-        int idProveedor;
-        double total;
-        String fechaCompra;
-
-        try {
-            idProveedor = Integer.parseInt(JOptionPane.showInputDialog("Nuevo ID del proveedor:", tablaCompras.getValueAt(fila, 1)));
-            fechaCompra = JOptionPane.showInputDialog("Nueva fecha de compra (YYYY-MM-DD):", tablaCompras.getValueAt(fila, 2));
-            total = Double.parseDouble(JOptionPane.showInputDialog("Nuevo total de la compra:", tablaCompras.getValueAt(fila, 3)));
-
-            if (fechaCompra != null && !fechaCompra.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_COMPRA(?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, id);
-                    stmt.setInt(2, idProveedor);
-                    stmt.setDate(3, Date.valueOf(fechaCompra));
-                    stmt.setDouble(4, total);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Compra actualizada.");
-                    tablaCompras.setModel(CompraDAO.obtenerCompras());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        CompraDAO.editarCompraDesdeTabla(tablaCompras, this);
     }//GEN-LAST:event_EditarCompraActionPerformed
 
     private void EliminarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarCompraActionPerformed
-        int fila = tablaCompras.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una compra.");
-            return;
-        }
-
-        int id = (int) tablaCompras.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta compra?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_COMPRA(?)}")) {
-
-                stmt.setInt(1, id);
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Compra eliminada.");
-                tablaCompras.setModel(CompraDAO.obtenerCompras());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        CompraDAO.eliminarCompraDesdeTabla(tablaCompras, this);
     }//GEN-LAST:event_EliminarCompraActionPerformed
 
     private void CrearEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearEmpleadoActionPerformed
-        int idEmpleado;
-        String nombre;
-        String cargo;
-        String telefono;
-        String correo;
-
-        try {
-            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del empleado:"));
-            nombre = JOptionPane.showInputDialog("Ingrese el nombre y apellido del empleado:");
-            cargo = JOptionPane.showInputDialog("Ingrese el cargo del empleado:");
-            telefono = JOptionPane.showInputDialog("Ingrese el telefono del empleado, separado por un guion (8888-8888):");
-            correo = JOptionPane.showInputDialog("Ingrese el correo del empleado:");
-
-            if (nombre != null && !nombre.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_EMPLEADO(?, ?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, idEmpleado);
-                    stmt.setString(2, nombre);
-                    stmt.setString(3, cargo);
-                    stmt.setString(4, telefono);
-                    stmt.setString(5, correo);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Empleado registrado.");
-                    tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (EmpleadoDAO.insertarEmpleadoDesdeFormulario()) {
+            JOptionPane.showMessageDialog(this, "Empleado registrado.");
+            tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
         }    }//GEN-LAST:event_CrearEmpleadoActionPerformed
 
     private void EditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarEmpleadoActionPerformed
-        int fila = tablaEmpleados.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un empleado.");
-            return;
-        }
-
-        int idEmpleado = (int) tablaEmpleados.getValueAt(fila, 0);
-        String nombre;
-        String cargo;
-        String telefono;
-        String correo;
-
-        try {
-            nombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre y apellido del empleado:", tablaEmpleados.getValueAt(fila, 1));
-            cargo = JOptionPane.showInputDialog("Ingrese el nuevo cargo del empleado:", tablaEmpleados.getValueAt(fila, 2));
-            telefono = JOptionPane.showInputDialog("Ingrese el nuevo telefono del empleado, separado por un guion (8888-8888):", tablaEmpleados.getValueAt(fila, 3));
-            correo = JOptionPane.showInputDialog("Ingrese el nuevo correo del empleado:", tablaEmpleados.getValueAt(fila, 4));
-
-            if (nombre != null && !nombre.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_EMPLEADO(?, ?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, idEmpleado);
-                    stmt.setString(2, nombre);
-                    stmt.setString(3, cargo);
-                    stmt.setString(4, telefono);
-                    stmt.setString(5, correo);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Empleado actualizado.");
-                    tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+        {
+            JOptionPane.showMessageDialog(this, "Empleado actualizado.");
+            tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
         }    }//GEN-LAST:event_EditarEmpleadoActionPerformed
 
     private void EliminarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarEmpleadoActionPerformed
-        int fila = tablaEmpleados.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un empleado.");
-            return;
-        }
-
-        int id = (int) tablaEmpleados.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este empleado?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_EMPLEADO(?)}")) {
-
-                stmt.setInt(1, id);
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Empleado eliminado.");
-                tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        if (EmpleadoDAO.eliminarEmpleadoDesdeTabla((DefaultTableModel) tablaEmpleados.getModel(), tablaEmpleados.getSelectedRow())) {
+            JOptionPane.showMessageDialog(this, "Empleado eliminado.");
+            tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
+        } else {
+            JOptionPane.showMessageDialog(this, "Error al eliminar el empleado.");
         }
     }//GEN-LAST:event_EliminarEmpleadoActionPerformed
 
     private void CrearClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearClientesActionPerformed
-        int idCliente;
-        String nombre;
-        String telefono;
-        String direccion;
-        String correo;
-
-        try {
-            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del cliente:"));
-            nombre = JOptionPane.showInputDialog("Ingrese el nombre y apellido del cliente:");
-            telefono = JOptionPane.showInputDialog("Ingrese el telefono del cliente, separado por un guion (8888-8888):");
-            direccion = JOptionPane.showInputDialog("Ingrese la direccion del cliente:");
-            correo = JOptionPane.showInputDialog("Ingrese el correo del cliente:");
-
-            if (nombre != null && !nombre.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CLIENTE(?, ?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, idCliente);
-                    stmt.setString(2, nombre);
-                    stmt.setString(3, telefono);
-                    stmt.setString(4, direccion);
-                    stmt.setString(5, correo);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Cliente registrado.");
-                    tablaClientes.setModel(ClienteDAO.obtenerClientes());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        ClienteDAO.crearClienteDesdeFormulario(tablaClientes, this);
     }//GEN-LAST:event_CrearClientesActionPerformed
 
     private void EditarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarClientesActionPerformed
-        int fila = tablaClientes.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
-            return;
-        }
-
-        int idCliente = (int) tablaClientes.getValueAt(fila, 0);
-        String nombre;
-        String telefono;
-        String direccion;
-        String correo;
-
-        try {
-            nombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre y apellido del cliente:", tablaClientes.getValueAt(fila, 1));
-            telefono = JOptionPane.showInputDialog("Ingrese el nuevo telefono del cliente, separado por un guion (8888-8888):", tablaClientes.getValueAt(fila, 2));
-            direccion = JOptionPane.showInputDialog("Ingrese la nueva direccion del cliente:", tablaClientes.getValueAt(fila, 3));
-            correo = JOptionPane.showInputDialog("Ingrese el nuevo correo del cliente:", tablaClientes.getValueAt(fila, 4));
-
-            if (nombre != null && !nombre.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_CLIENTE(?, ?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, idCliente);
-                    stmt.setString(2, nombre);
-                    stmt.setString(3, telefono);
-                    stmt.setString(4, direccion);
-                    stmt.setString(5, correo);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Cliente actualizado.");
-                    tablaClientes.setModel(ClienteDAO.obtenerClientes());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        ClienteDAO.editarClienteDesdeTabla(tablaClientes, this);
     }//GEN-LAST:event_EditarClientesActionPerformed
 
     private void EliminarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarClientesActionPerformed
-        int fila = tablaClientes.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un cliente.");
-            return;
-        }
-
-        int id = (int) tablaClientes.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CLIENTE(?)}")) {
-
-                stmt.setInt(1, id);
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Cliente eliminado.");
-                tablaClientes.setModel(ClienteDAO.obtenerClientes());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        ClienteDAO.eliminarClienteDesdeTabla(tablaClientes, this);
     }//GEN-LAST:event_EliminarClientesActionPerformed
 
     private void CrearVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearVentasActionPerformed
-        int idCliente;
-        int idEmpleado;
-        String fechaVenta;
-        double total;
-
-        try {
-            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del cliente al que se le realizo la venta:"));
-            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del empleado que realizo la venta:"));
-            fechaVenta = JOptionPane.showInputDialog("Ingrese la fecha de la venta (YYYY-MM-DD):");
-            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el total de la venta:"));
-
-            if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, obtenerNuevoID());
-                    stmt.setInt(2, idCliente);
-                    stmt.setInt(3, idEmpleado);
-                    stmt.setDate(4, Date.valueOf(fechaVenta));
-                    stmt.setDouble(5, total);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Venta registrada.");
-                    tablaVentas.setModel(VentaDAO.obtenerVentas());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        VentaDAO.crearVentaDesdeFormulario(tablaVentas, this);
     }//GEN-LAST:event_CrearVentasActionPerformed
 
     private void EditarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarVentasActionPerformed
-        int fila = tablaVentas.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una compra.");
-            return;
-        }
-
-        int id = (int) tablaVentas.getValueAt(fila, 0);
-        int idCliente;
-        int idEmpleado;
-        String fechaVenta;
-        double total;
-
-        try {
-            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo ID del cliente al que se le realizo la venta:", tablaVentas.getValueAt(fila, 1)));
-            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo ID del empleado que realizo la venta:", tablaVentas.getValueAt(fila, 2)));
-            fechaVenta = JOptionPane.showInputDialog("Ingrese la nueva fecha de la venta (YYYY-MM-DD):", tablaVentas.getValueAt(fila, 3));
-            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el nuevo total de la venta:", tablaVentas.getValueAt(fila, 4)));
-
-            if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
-
-                    stmt.setInt(1, id);
-                    stmt.setInt(2, idCliente);
-                    stmt.setInt(3, idEmpleado);
-                    stmt.setDate(4, Date.valueOf(fechaVenta));
-                    stmt.setDouble(5, total);
-                    stmt.execute();
-
-                    JOptionPane.showMessageDialog(this, "Venta actualizada.");
-                    tablaVentas.setModel(VentaDAO.obtenerVentas());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        VentaDAO.actualizarVentaDesdeFormulario(tablaVentas, this);
     }//GEN-LAST:event_EditarVentasActionPerformed
 
     private void BorrarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarVentasActionPerformed
-        int fila = tablaVentas.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una venta.");
-            return;
-        }
-
-        int id = (int) tablaVentas.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar esta venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_VENTA(?)}")) {
-
-                stmt.setInt(1, id);
-                stmt.execute();
-
-                JOptionPane.showMessageDialog(this, "Venta eliminada.");
-                tablaVentas.setModel(VentaDAO.obtenerVentas());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        VentaDAO.eliminarVentaDesdeTabla(tablaVentas, this);
     }//GEN-LAST:event_BorrarVentasActionPerformed
 
     private void CrearProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProveedorActionPerformed
-        // Solicitar información sobre proveedor
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del proveedor:");
-        String telefono = JOptionPane.showInputDialog("Ingrese el teléfono del proveedor:");
-        String direccion = JOptionPane.showInputDialog("Ingrese la dirección del proveedor:");
-        String correo = JOptionPane.showInputDialog("Ingrese el correo del proveedor:");
-
-        if (nombre != null && !nombre.trim().isEmpty()
-                && telefono != null && !telefono.trim().isEmpty()
-                && direccion != null && !direccion.trim().isEmpty()
-                && correo != null && !correo.trim().isEmpty()) {
-
-            int id = obtenerNuevoID();
-
-            boolean resultado = ProveedorDAO.insertarProveedor(id, nombre, telefono, direccion, correo);
-
-            if (resultado) {
-                JOptionPane.showMessageDialog(this, "Proveedor agregado.");
-                tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al agregar el proveedor.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
-        }
+        ProveedorDAO.crearProveedorDesdeFormulario(tablaProveedor, this);
     }//GEN-LAST:event_CrearProveedorActionPerformed
 
     private void EditarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProveedorActionPerformed
-        int fila = tablaProveedor.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un proveedor.");
-            return;
-        }
-
-        int id = (int) tablaProveedor.getValueAt(fila, 0);
-        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaProveedor.getValueAt(fila, 1));
-        String nuevoTelefono = JOptionPane.showInputDialog("Nuevo teléfono:", tablaProveedor.getValueAt(fila, 2));
-        String nuevoDireccion = JOptionPane.showInputDialog("Nueva Dirección:", tablaProveedor.getValueAt(fila, 3));
-        String nuevoCorreo = JOptionPane.showInputDialog("Nuevo Correo:", tablaProveedor.getValueAt(fila, 4));
-
-        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty() && nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
-            boolean actualizado = ProveedorDAO.actualizarProveedor(id, nuevoNombre, nuevoTelefono, nuevoDireccion, nuevoCorreo);
-
-            if (actualizado) {
-                JOptionPane.showMessageDialog(this, "Proveedor actualizado.");
-                tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al actualizar proveedor.");
-            }
-        }
+        ProveedorDAO.actualizarProveedorDesdeTabla(tablaProveedor, this);
     }//GEN-LAST:event_EditarProveedorActionPerformed
 
     private void BorrarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProveedorActionPerformed
-        int fila = tablaProveedor.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un Proveedor.");
-            return;
-        }
-
-        int id = (int) tablaProveedor.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean eliminado = ProveedorDAO.eliminarProveedor(id);
-
-            if (eliminado) {
-                JOptionPane.showMessageDialog(this, "Proveedor eliminado.");
-                tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al eliminar proveedor.");
-            }
-        }
+        ProveedorDAO.eliminarProveedorDesdeTabla(tablaProveedor, this);
     }//GEN-LAST:event_BorrarProveedorActionPerformed
 
     private void CrearProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProductoActionPerformed
 
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
-        String descripcion = JOptionPane.showInputDialog("Ingrese descripción del producto:");
-        String precioStr = JOptionPane.showInputDialog("Ingrese el precio:");
-        String stockStr = JOptionPane.showInputDialog("Ingrese la cantidad en stock:");
-        String idCategoriaStr = JOptionPane.showInputDialog("Ingrese el ID de la categoría:");
-
-        if (nombre != null && !nombre.trim().isEmpty()
-                && descripcion != null && !descripcion.trim().isEmpty()
-                && precioStr != null && !precioStr.trim().isEmpty()
-                && stockStr != null && !stockStr.trim().isEmpty()
-                && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
-
-            try {
-                int id = obtenerNuevoID();
-                double precio = Double.parseDouble(precioStr);
-                int stock = Integer.parseInt(StockStr);
-                int idCategoria = Integer.parseInt(idCategoriaStr);
-                
-                boolean exito = ProductoDAO.insertarProducto(id, nombre, descripcion, precio, stock, idCategoria);
-                
-                if(exito) {
-                    JOptionPane.showMessageDialog(this, "Producto agregado con exito.");
-                tablaProveedor.setModel(ProductoDAO.obtenerProductos());
-                } else {
-                JOptionPane.showMessageDialog(this, "Error al agregar el producto");
-                }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Por favor ingresar datos numericos.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los espacios.");
-        }
+        ProductoDAO.insertarProductoDesdeFormulario(tablaProducto, this);
     }//GEN-LAST:event_CrearProductoActionPerformed
 
     private void EditarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProductoActionPerformed
 
-        int fila = tablaProducto.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un producto.");
-            return;
-        }
-        int id = (int) tablaProducto.getValueAt(fila, 0);
-        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaProducto.getValueAt(fila, 1));
-        String nuevaDescripcion = JOptionPane.showInputDialog("Nueva descripción:", tablaProducto.getValueAt(fila, 2));
-        String nuevoPrecioStr = JOptionPane.showInputDialog("Nuevo precio:", tablaProducto.getValueAt(fila, 3));
-        String nuevoStockStr = JOptionPane.showInputDialog("Nuevo stock:", tablaProducto.getValueAt(fila, 4));
-        String nuevaCategoriaStr = JOptionPane.showInputDialog("Nuevo ID de categoría:", tablaProducto.getValueAt(fila, 5));
-
-        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()
-                && nuevaDescripcion != null && !nuevaDescripcion.trim().isEmpty()
-                && nuevoPrecioStr != null && !nuevoPrecioStr.trim().isEmpty()
-                && nuevoStockStr != null && !nuevoStockStr.trim().isEmpty()
-                && nuevaCategoriaStr != null && !nuevaCategoriaStr.trim().isEmpty()) {
-
-            try {
-                double precio = Double.parseDouble(nuevoPrecioStr);
-                int stock = Integer.parseInt(nuevoStockStr);
-                int idCategoria = Integer.parseInt(nuevaCategoriaStr);
-                
-                boolean exito = ProductoDAO.actualizarProducto(id, nuevoNombre, nuevaDescripcion, precio, stock, idCategoria);
-                
-                if(exito) {
-                    JOptionPane.showMessageDialog(this, "Producto actualizado con exito.");
-                tablaProveedor.setModel(ProductoDAO.obtenerProductos());
-                } else {
-                JOptionPane.showMessageDialog(this, "Error al actualizar el producto");
-                }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Por favor ingresar datos validos.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los espacios.");
-        }
+        ProductoDAO.actualizarProductoDesdeTabla(tablaProducto, this);
     }//GEN-LAST:event_EditarProductoActionPerformed
 
     private void BorrarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProductoActionPerformed
         
-        int fila = tablaProducto.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un producto.");
-            return;
-        }
-
-        int id = (int) tablaProducto.getValueAt(fila, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean exito = ProductoDAO.eliminarProducto(id);
-
-            if (exito) {
-
-                JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
-                tablaProducto.setModel(ProductoDAO.obtenerProductos());
-            } else {
-
-                JOptionPane.showMessageDialog(this, "Error al eliminar el producto.");
-            }
-        }      
+        ProductoDAO.eliminarProductoDesdeTabla(tablaProducto, this);     
     }//GEN-LAST:event_BorrarProductoActionPerformed
 
     private void CrearDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearDetVentasActionPerformed
