@@ -1,0 +1,252 @@
+CREATE OR REPLACE FUNCTION fn_total_compras_cliente(p_id_cliente NUMBER)
+RETURN NUMBER IS
+    v_total_compras NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_total_compras 
+    FROM VENTAS 
+    WHERE ID_CLIENTE = p_id_cliente;
+
+    RETURN v_total_compras;
+END;
+
+SELECT fn_total_compras_cliente(3) AS total_compras FROM dual;
+
+
+CREATE OR REPLACE FUNCTION fn_ventas_en_rango(p_inicio DATE, p_fin DATE)
+RETURN NUMBER IS
+    v_cantidad NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_cantidad FROM VENTAS
+    WHERE FECHA_VENTA BETWEEN p_inicio AND p_fin;
+    RETURN v_cantidad;
+END;
+
+SELECT fn_ventas_en_rango(TO_DATE('2024-01-01', 'YYYY-MM-DD'), TO_DATE('2025-12-31', 'YYYY-MM-DD')) AS total_ventas
+FROM dual;
+
+
+CREATE OR REPLACE FUNCTION fn_total_productos_inventario
+RETURN NUMBER IS
+    v_total NUMBER;
+BEGIN
+    SELECT SUM(STOCK) INTO v_total FROM PRODUCTOS;
+    RETURN NVL(v_total, 0);
+END;
+
+SELECT fn_total_productos_inventario AS total_productos_inventario
+FROM DUAL;
+
+
+CREATE OR REPLACE FUNCTION fn_promedio_ventas_empleado(p_id_empleado NUMBER)
+RETURN NUMBER IS
+    v_promedio NUMBER;
+BEGIN
+    SELECT AVG(TOTAL) INTO v_promedio FROM VENTAS WHERE ID_EMPLEADO = p_id_empleado;
+    RETURN NVL(v_promedio, 0);
+END;
+
+SELECT fn_promedio_ventas_empleado(1) AS promedio_ventas
+FROM DUAL;
+
+
+CREATE OR REPLACE FUNCTION fn_compras_por_proveedor(p_id_proveedor NUMBER)
+RETURN SYS_REFCURSOR IS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR
+    SELECT ID_COMPRA, FECHA_COMPRA, TOTAL
+    FROM COMPRAS
+    WHERE ID_PROVEEDOR = p_id_proveedor;
+
+    RETURN cur;
+END;
+
+
+
+CREATE OR REPLACE FUNCTION fn_productos_stock_bajo(p_limite NUMBER)
+RETURN SYS_REFCURSOR IS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR
+    SELECT ID_PRODUCTO, NOMBRE, STOCK
+    FROM PRODUCTOS
+    WHERE STOCK < p_limite;
+
+    RETURN cur;
+END;
+
+
+
+
+CREATE OR REPLACE FUNCTION fn_ventas_por_mes(p_mes NUMBER, p_anio NUMBER)
+RETURN SYS_REFCURSOR IS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR
+    SELECT ID_VENTA, FECHA_VENTA, TOTAL
+    FROM VENTAS
+    WHERE EXTRACT(MONTH FROM FECHA_VENTA) = p_mes
+      AND EXTRACT(YEAR FROM FECHA_VENTA) = p_anio;
+
+    RETURN cur;
+END;
+
+
+CREATE OR REPLACE FUNCTION fn_total_productos_proveedor(p_id_proveedor NUMBER)
+RETURN NUMBER IS
+    v_total NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_total
+    FROM PRODUCTOS P
+    JOIN COMPRAS C ON P.ID_PRODUCTO = C.ID_COMPRA
+    WHERE C.ID_PROVEEDOR = p_id_proveedor;
+
+    RETURN v_total;
+END;
+
+
+CREATE OR REPLACE FUNCTION fn_promedio_precio_categoria(p_id_categoria NUMBER)
+RETURN NUMBER IS
+    v_promedio_precio NUMBER;
+BEGIN
+    SELECT AVG(P.PRECIO) INTO v_promedio_precio
+    FROM PRODUCTOS P
+    WHERE P.ID_CATEGORIA = p_id_categoria;
+
+    RETURN NVL(v_promedio_precio, 0);
+END;
+
+
+CREATE OR REPLACE FUNCTION fn_ventas_por_dia(p_fecha DATE)
+RETURN NUMBER IS
+    v_total_ventas NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_total_ventas
+    FROM VENTAS
+    WHERE FECHA_VENTA = p_fecha;
+
+    RETURN v_total_ventas;
+END;
+
+
+
+CREATE OR REPLACE FUNCTION fn_productos_mas_comprados_proveedor(p_id_proveedor NUMBER)
+RETURN SYS_REFCURSOR IS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR
+    SELECT P.ID_PRODUCTO, P.NOMBRE, SUM(C.ID_COMPRA) AS TOTAL_COMPRADO
+    FROM PRODUCTOS P
+    JOIN COMPRAS C ON P.ID_PRODUCTO = C.ID_COMPRA
+    WHERE C.ID_PROVEEDOR = p_id_proveedor
+    GROUP BY P.ID_PRODUCTO, P.NOMBRE
+    ORDER BY TOTAL_COMPRADO DESC;
+
+    RETURN cur;
+END;
+
+
+CREATE OR REPLACE FUNCTION fn_clientes_mas_gastadores
+RETURN SYS_REFCURSOR IS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR
+    SELECT C.ID_CLIENTE, C.NOMBRE, SUM(V.TOTAL) AS TOTAL_GASTADO
+    FROM CLIENTES C
+    JOIN VENTAS V ON C.ID_CLIENTE = V.ID_CLIENTE
+    GROUP BY C.ID_CLIENTE, C.NOMBRE
+    ORDER BY TOTAL_GASTADO DESC;
+
+    RETURN cur;
+END;
+
+
+CREATE OR REPLACE FUNCTION fn_productos_mas_caros_categoria
+RETURN SYS_REFCURSOR IS
+    cur SYS_REFCURSOR;
+BEGIN
+    OPEN cur FOR
+    SELECT P.ID_CATEGORIA, P.NOMBRE, P.PRECIO
+    FROM PRODUCTOS P
+    WHERE P.PRECIO = (
+        SELECT MAX(P2.PRECIO)
+        FROM PRODUCTOS P2
+        WHERE P2.ID_CATEGORIA = P.ID_CATEGORIA
+    )
+    ORDER BY P.ID_CATEGORIA;
+
+    RETURN cur;
+END;
+
+
+--------------------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE paquete_funciones_comercio IS
+    FUNCTION fn_total_productos_categoria(p_id_categoria NUMBER) RETURN NUMBER;
+    FUNCTION fn_total_ventas_empleado(p_id_empleado NUMBER) RETURN NUMBER;
+    FUNCTION fn_clientes_frecuentes(p_min_compras NUMBER) RETURN SYS_REFCURSOR;
+    FUNCTION fn_productos_mas_vendidos(p_min_cantidad NUMBER) RETURN SYS_REFCURSOR;
+    FUNCTION fn_total_gastado_cliente(p_id_cliente NUMBER) RETURN NUMBER;
+END paquete_funciones_comercio;
+
+CREATE OR REPLACE PACKAGE BODY paquete_funciones_comercio IS
+
+    FUNCTION fn_total_productos_categoria(p_id_categoria NUMBER)
+    RETURN NUMBER IS
+        v_total NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_total 
+        FROM PRODUCTOS 
+        WHERE ID_CATEGORIA = p_id_categoria;
+        RETURN v_total;
+    END;
+
+    FUNCTION fn_total_ventas_empleado(p_id_empleado NUMBER)
+    RETURN NUMBER IS
+        v_total NUMBER := 0;
+    BEGIN
+        SELECT SUM(TOTAL) INTO v_total 
+        FROM VENTAS 
+        WHERE ID_EMPLEADO = p_id_empleado;
+        RETURN NVL(v_total, 0);
+    END;
+
+    FUNCTION fn_clientes_frecuentes(p_min_compras NUMBER)
+    RETURN SYS_REFCURSOR IS
+        cur SYS_REFCURSOR;
+    BEGIN
+        OPEN cur FOR
+        SELECT C.ID_CLIENTE, C.NOMBRE, COUNT(V.ID_VENTA) AS TOTAL_COMPRAS
+        FROM CLIENTES C
+        JOIN VENTAS V ON C.ID_CLIENTE = V.ID_CLIENTE
+        GROUP BY C.ID_CLIENTE, C.NOMBRE
+        HAVING COUNT(V.ID_VENTA) >= p_min_compras;
+
+        RETURN cur;
+    END;
+
+    FUNCTION fn_productos_mas_vendidos(p_min_cantidad NUMBER)
+    RETURN SYS_REFCURSOR IS
+        cur SYS_REFCURSOR;
+    BEGIN
+        OPEN cur FOR
+        SELECT P.ID_PRODUCTO, P.NOMBRE, SUM(DV.CANTIDAD) AS TOTAL_VENDIDO
+        FROM PRODUCTOS P
+        JOIN DETALLE_VENTAS DV ON P.ID_PRODUCTO = DV.ID_PRODUCTO
+        GROUP BY P.ID_PRODUCTO, P.NOMBRE
+        HAVING SUM(DV.CANTIDAD) >= p_min_cantidad;
+
+        RETURN cur;
+    END;
+
+    FUNCTION fn_total_gastado_cliente(p_id_cliente NUMBER)
+    RETURN NUMBER IS
+        v_total NUMBER;
+    BEGIN
+        SELECT NVL(SUM(TOTAL), 0) INTO v_total
+        FROM VENTAS
+        WHERE ID_CLIENTE = p_id_cliente;
+        RETURN v_total;
+    END;
+
+END paquete_funciones_comercio;
