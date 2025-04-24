@@ -30,7 +30,7 @@ public class CategoriaDAO {
 
     public static int obtenerNuevoID() {
         int nuevoID = -1;
-        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_CATEGORIA) + 1 FROM CATEGORIA"); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_CATEGORIA) + 1 FROM CATEGORIAS"); ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 nuevoID = rs.getInt(1);
             }
@@ -94,7 +94,7 @@ public class CategoriaDAO {
                 System.err.println("No se pudo establecer conexión.");
                 return false;
             }
-            try (CallableStatement stmt = con.prepareCall("{call ACTUALIZAR_CATEGORIA(?)}")) {
+            try (CallableStatement stmt = con.prepareCall("{call Pk_Procedimiento_Categoria.ACTUALIZAR_CATEGORIA(?, ?)}")) {
                 stmt.setInt(1, id);
                 stmt.setString(2, nuevoNombre);
                 stmt.execute();
@@ -137,7 +137,7 @@ public class CategoriaDAO {
                 System.err.println("No se pudo establecer conexión.");
                 return false;
             }
-            try (CallableStatement stmt = con.prepareCall("{call INSERTAR_CATEGORIA(?, ?)}")) {
+            try (CallableStatement stmt = con.prepareCall("{call Pk_Procedimiento_Categoria.INSERTAR_CATEGORIA(?, ?)}")) {
                 stmt.setInt(1, id);
                 stmt.setString(2, nombre);
                 stmt.execute();
