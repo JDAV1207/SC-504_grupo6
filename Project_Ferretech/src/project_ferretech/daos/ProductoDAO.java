@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package project_ferretech;
+package project_ferretech.daos;
 
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,6 +10,7 @@ import oracle.jdbc.OracleTypes;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import project_ferretech.ConexionOracle;
 
 public class ProductoDAO {
 
@@ -51,22 +52,33 @@ public class ProductoDAO {
         }
         return modelo;
     }
+    
+        public static int obtenerNuevoID() {
+        int nuevoID = -1;
+        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_PRODUCTO) + 1 FROM PRODUCTOS"); ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                nuevoID = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener nuevo ID de PRODUCTOS: " + e.getMessage());
+        }
+        return nuevoID;}
 
     //INSERTAR
-    public static boolean insertarProducto(String nombre, String descripcion, double precio, int stock,
+    public static boolean insertarProducto(String nombre, String descripcion, int precio, int stock,
             int idCategoria) {
         try (Connection con = ConexionOracle.getConnection()) {
             if (con == null) {
                 System.err.println("No se pudo establecer conexión.");
                 return false;
             }
-            try (CallableStatement stmt = con.prepareCall("{call INSERTAR_PRODUCTO(?, ?, ?, ?, ?)}")) {
-                //stmt.setInt(1, id);
-                stmt.setString(1, nombre);
-                stmt.setString(2, descripcion);
-                stmt.setDouble(3, precio);
-                stmt.setInt(4, stock);
-                stmt.setInt(5, idCategoria);
+            try (CallableStatement stmt = con.prepareCall("{call  Pk_Procedimiento_Producto.INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
+                stmt.setInt(1,  obtenerNuevoID());
+                stmt.setString(2, nombre);
+                stmt.setString(3, descripcion);
+                stmt.setInt(4, precio);
+                stmt.setInt(5, stock);
+                stmt.setInt(6, idCategoria);
                 stmt.execute();
                 return true;
             }
@@ -90,7 +102,7 @@ public class ProductoDAO {
                 && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
 
             try {
-                double precio = Double.parseDouble(precioStr);
+                int precio = Integer.parseInt(precioStr);
                 int stock = Integer.parseInt(stockStr);
                 int idCategoria = Integer.parseInt(idCategoriaStr);
 
@@ -117,7 +129,7 @@ public class ProductoDAO {
                 System.err.println("No se pudo establecer conexión.");
                 return false;
             }
-            try (CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
+            try (CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
                 stmt.setInt(1, id);
                 stmt.setString(2, nombre);
                 stmt.setString(3, descripcion);
@@ -181,7 +193,7 @@ public class ProductoDAO {
                 System.err.println("No se pudo establecer conexión.");
                 return false;
             }
-            try (CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PRODUCTO(?)}")) {
+            try (CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.ELIMINAR_PRODUCTO(?)}")) {
                 stmt.setInt(1, id);
                 stmt.execute();
                 return true;

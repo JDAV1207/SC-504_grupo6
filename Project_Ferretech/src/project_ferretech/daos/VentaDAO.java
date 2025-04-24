@@ -1,4 +1,4 @@
-package project_ferretech;
+package project_ferretech.daos;
 
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
@@ -6,6 +6,7 @@ import oracle.jdbc.OracleTypes;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import project_ferretech.ConexionOracle;
 
 public class VentaDAO {
 
@@ -37,19 +38,21 @@ public class VentaDAO {
         return modelo;
     }
 
-    private static int obtenerNuevoID() throws SQLException {
-        int nuevoID = 0;
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL OBTENER_NUEVO_ID_VENTA(?)}")) {
-            stmt.registerOutParameter(1, OracleTypes.INTEGER);
-            stmt.execute();
-            nuevoID = stmt.getInt(1);
+    public static int obtenerNuevoID() {
+        int nuevoID = -1;
+        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_PRODUCTO) + 1 FROM PRODUCTOS"); ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                nuevoID = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener nuevo ID de PRODUCTOS: " + e.getMessage());
         }
         return nuevoID;
     }
 
     //Crear VENTA
     public static void insertarVenta(int idVenta, int idCliente, int idEmpleado, String fechaVenta, double total) throws SQLException {
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
+        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
 
             stmt.setInt(1, idVenta);
             stmt.setInt(2, idCliente);
@@ -86,7 +89,7 @@ public class VentaDAO {
 
     //Actualizar VENTA
     public static void actualizarVenta(int idVenta, int idCliente, int idEmpleado, String fechaVenta, double total) throws SQLException {
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
+        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
 
             stmt.setInt(1, idVenta);
             stmt.setInt(2, idCliente);
@@ -151,7 +154,7 @@ public class VentaDAO {
     }
 
     public static void eliminarVenta(int idVenta) throws SQLException {
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_VENTA(?)}")) {
+        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_venta.ELIMINAR_VENTA(?)}")) {
 
             stmt.setInt(1, idVenta);
             stmt.execute();

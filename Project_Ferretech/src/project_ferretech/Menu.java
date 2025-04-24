@@ -1,5 +1,12 @@
 package project_ferretech;
 
+import project_ferretech.daos.DetalleVentasDAO;
+import project_ferretech.daos.CompraDAO;
+import project_ferretech.daos.ClienteDAO;
+import project_ferretech.daos.EmpleadoDAO;
+import project_ferretech.daos.VentaDAO;
+import project_ferretech.daos.ProductoDAO;
+import project_ferretech.daos.ProveedorDAO;
 import project_ferretech.daos.CategoriaDAO;
 import java.sql.*;
 import javax.swing.JOptionPane;
@@ -7,10 +14,10 @@ import java.sql.Connection;
 import javax.swing.table.DefaultTableModel;
 
 public class Menu extends javax.swing.JFrame {
-
+    
     public Menu() {
         initComponents();
-
+        
     }
 
     // Método para obtener un nuevo ID
@@ -96,7 +103,7 @@ public class Menu extends javax.swing.JFrame {
         jTabbedPane1.setFont(new java.awt.Font("STIXGeneral", 0, 15)); // NOI18N
         jTabbedPane1.setName("FERRETECH"); // NOI18N
 
-        tablaEmpleados.setModel(project_ferretech.EmpleadoDAO.obtenerEmpleados());
+        tablaEmpleados.setModel(project_ferretech.daos.EmpleadoDAO.obtenerEmpleados());
         tablaEmpleados.setName("FERRETECH"); // NOI18N
         jScrollPane3.setViewportView(tablaEmpleados);
 
@@ -153,7 +160,7 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Empleados", Empleados);
 
-        tablaClientes.setModel(project_ferretech.ClienteDAO.obtenerClientes());
+        tablaClientes.setModel(project_ferretech.daos.ClienteDAO.obtenerClientes());
         tablaClientes.setName("FERRETECH"); // NOI18N
         jScrollPane5.setViewportView(tablaClientes);
 
@@ -210,7 +217,7 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Clientes", Clientes);
 
-        tablaCompras.setModel(project_ferretech.CompraDAO.obtenerCompras());
+        tablaCompras.setModel(project_ferretech.daos.CompraDAO.obtenerCompras());
         jScrollPane2.setViewportView(tablaCompras);
 
         CrearCompra.setText("Crear");
@@ -266,7 +273,7 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Compras", Compras);
 
-        tablaVentas.setModel(project_ferretech.VentaDAO.obtenerVentas());
+        tablaVentas.setModel(project_ferretech.daos.VentaDAO.obtenerVentas());
         jScrollPane4.setViewportView(tablaVentas);
 
         CrearVentas.setText("Crear");
@@ -502,7 +509,7 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Productos", jPanel2);
 
-        tablaDetVentas.setModel(project_ferretech.DetalleVentasDAO.obtenerDetalleVentas());
+        tablaDetVentas.setModel(project_ferretech.daos.DetalleVentasDAO.obtenerDetalleVentas());
         tablaDetVentas.setName("FERRETECH"); // NOI18N
         jScrollPane8.setViewportView(tablaDetVentas);
 
@@ -614,52 +621,31 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_EditarCategoriaActionPerformed
 
     private void CrearCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCategoriaActionPerformed
-         CategoriaDAO.crearCategoriaDesdeInput(tablaCategorias, this);
+        CategoriaDAO.crearCategoriaDesdeInput(tablaCategorias, this);
     }//GEN-LAST:event_CrearCategoriaActionPerformed
 
     private void CrearCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCompraActionPerformed
-        CompraDAO.crearCompraDesdeFormulario(tablaCompras, this);
+        CompraDAO.crearCompra(this, tablaCompras);
     }//GEN-LAST:event_CrearCompraActionPerformed
 
     private void EditarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCompraActionPerformed
-        CompraDAO.editarCompraDesdeTabla(tablaCompras, this);
+        CompraDAO.editarCompra(this, tablaCompras);
     }//GEN-LAST:event_EditarCompraActionPerformed
 
     private void EliminarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarCompraActionPerformed
-        CompraDAO.eliminarCompraDesdeTabla(tablaCompras, this);
+        CompraDAO.eliminarCompra(this, tablaCompras);
     }//GEN-LAST:event_EliminarCompraActionPerformed
 
-    private void CrearEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearEmpleadoActionPerformed
-        if (EmpleadoDAO.insertarEmpleadoDesdeFormulario()) {
-            JOptionPane.showMessageDialog(this, "Empleado registrado.");
-            tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
-        }    }//GEN-LAST:event_CrearEmpleadoActionPerformed
-
-    private void EditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarEmpleadoActionPerformed
-        {
-            JOptionPane.showMessageDialog(this, "Empleado actualizado.");
-            tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
-        }    }//GEN-LAST:event_EditarEmpleadoActionPerformed
-
     private void EliminarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarEmpleadoActionPerformed
-        if (EmpleadoDAO.eliminarEmpleadoDesdeTabla((DefaultTableModel) tablaEmpleados.getModel(), tablaEmpleados.getSelectedRow())) {
-            JOptionPane.showMessageDialog(this, "Empleado eliminado.");
-            tablaEmpleados.setModel(EmpleadoDAO.obtenerEmpleados());
-        } else {
-            JOptionPane.showMessageDialog(this, "Error al eliminar el empleado.");
-        }
+        EmpleadoDAO.eliminarEmpleado(this, tablaEmpleados);
     }//GEN-LAST:event_EliminarEmpleadoActionPerformed
 
-    private void CrearClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearClientesActionPerformed
-        ClienteDAO.crearClienteDesdeFormulario(tablaClientes, this);
-    }//GEN-LAST:event_CrearClientesActionPerformed
-
     private void EditarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarClientesActionPerformed
-        ClienteDAO.editarClienteDesdeTabla(tablaClientes, this);
+        ClienteDAO.editarCliente(this, tablaClientes);
     }//GEN-LAST:event_EditarClientesActionPerformed
 
     private void EliminarClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarClientesActionPerformed
-        ClienteDAO.eliminarClienteDesdeTabla(tablaClientes, this);
+        ClienteDAO.eliminarCliente(this, tablaClientes);
     }//GEN-LAST:event_EliminarClientesActionPerformed
 
     private void CrearVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearVentasActionPerformed
@@ -687,83 +673,43 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_BorrarProveedorActionPerformed
 
     private void CrearProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProductoActionPerformed
-
+        
         ProductoDAO.insertarProductoDesdeFormulario(tablaProducto, this);
     }//GEN-LAST:event_CrearProductoActionPerformed
 
     private void EditarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProductoActionPerformed
-
+        
         ProductoDAO.actualizarProductoDesdeTabla(tablaProducto, this);
     }//GEN-LAST:event_EditarProductoActionPerformed
 
     private void BorrarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProductoActionPerformed
         
-        ProductoDAO.eliminarProductoDesdeTabla(tablaProducto, this);     
+        ProductoDAO.eliminarProductoDesdeTabla(tablaProducto, this);        
     }//GEN-LAST:event_BorrarProductoActionPerformed
 
     private void CrearDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearDetVentasActionPerformed
-        try {
-            int idVenta = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID de la venta:"));
-            int idProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto:"));
-            int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad:"));
-            double precioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio unitario:"));
-
-            boolean creado = DetalleVentasDAO.insertarDetalleVenta(idVenta, idVenta, idProducto, cantidad, precioUnitario);
-
-            if (creado) {
-                JOptionPane.showMessageDialog(this, "Detalle de venta agregado.");
-                tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
-            } else {
-
-                JOptionPane.showMessageDialog(this, "Error al agregar el detalle de venta.");
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Entrada inválida. Por favor ingrese solo números.");
-        }
+        DetalleVentasDAO.crearDetalleVenta(this, tablaDetVentas);
     }//GEN-LAST:event_CrearDetVentasActionPerformed
 
     private void EditarDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarDetVentasActionPerformed
-        int fila = tablaDetVentas.getSelectedRow();
-if (fila == -1) {
-    JOptionPane.showMessageDialog(this, "Seleccione un detalle de venta.");
-    return;
-}
-
-int id = (int) tablaDetVentas.getValueAt(fila, 0);
-int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", tablaDetVentas.getValueAt(fila, 3)));
-double nuevoPrecioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio unitario:", tablaDetVentas.getValueAt(fila, 4)));
-
-boolean actualizado = DetalleVentasDAO.actualizarDetalleVenta(id, nuevaCantidad, nuevoPrecioUnitario);
-
-if (actualizado) {
-    JOptionPane.showMessageDialog(this, "Detalle de venta actualizado.");
-    tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
-} else {
-    JOptionPane.showMessageDialog(this, "Error al actualizar el detalle de venta.");
-}
+        DetalleVentasDAO.editarDetalleVenta(this, tablaDetVentas);
     }//GEN-LAST:event_EditarDetVentasActionPerformed
 
     private void EliminarDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarDetVentasActionPerformed
-        int fila = tablaDetVentas.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione un detalle de venta.");
-            return;
-        }
-
-        int id = (int) tablaDetVentas.getValueAt(fila, 0);
-
-        int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar este detalle de venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean eliminado = DetalleVentasDAO.eliminarDetalleVenta(id);  
-
-            if (eliminado){
-            JOptionPane.showMessageDialog(this, "Detalle de venta eliminado.");
-    tablaDetVentas.setModel(DetalleVentasDAO.obtenerDetalleVentas());
-} else {
-    JOptionPane.showMessageDialog(this, "Error al eliminar el detalle de venta.");
-    }
-            }
+        DetalleVentasDAO.eliminarDetalleVenta(this, tablaDetVentas);
     }//GEN-LAST:event_EliminarDetVentasActionPerformed
+
+    private void EditarEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarEmpleadoActionPerformed
+        EmpleadoDAO.editarEmpleado(this, tablaEmpleados);
+    }//GEN-LAST:event_EditarEmpleadoActionPerformed
+
+    private void CrearEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearEmpleadoActionPerformed
+        EmpleadoDAO.crearEmpleado(this, tablaEmpleados);
+    }//GEN-LAST:event_CrearEmpleadoActionPerformed
+
+    private void CrearClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearClientesActionPerformed
+        ClienteDAO.crearCliente(this, tablaClientes);
+    }//GEN-LAST:event_CrearClientesActionPerformed
 
     /**
      * @param args the command line arguments

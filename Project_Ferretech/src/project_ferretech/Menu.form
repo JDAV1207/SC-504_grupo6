@@ -119,7 +119,7 @@
                 <Component class="javax.swing.JTable" name="tablaEmpleados">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="project_ferretech.EmpleadoDAO.obtenerEmpleados()" type="code"/>
+                      <Connection code="project_ferretech.daos.EmpleadoDAO.obtenerEmpleados()" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>
@@ -214,7 +214,7 @@
                 <Component class="javax.swing.JTable" name="tablaClientes">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="project_ferretech.ClienteDAO.obtenerClientes()" type="code"/>
+                      <Connection code="project_ferretech.daos.ClienteDAO.obtenerClientes()" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>
@@ -309,7 +309,7 @@
                 <Component class="javax.swing.JTable" name="tablaCompras">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="project_ferretech.CompraDAO.obtenerCompras()" type="code"/>
+                      <Connection code="project_ferretech.daos.CompraDAO.obtenerCompras()" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>
@@ -408,7 +408,7 @@
                 <Component class="javax.swing.JTable" name="tablaVentas">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="project_ferretech.VentaDAO.obtenerVentas()" type="code"/>
+                      <Connection code="project_ferretech.daos.VentaDAO.obtenerVentas()" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>
@@ -799,7 +799,7 @@
                 <Component class="javax.swing.JTable" name="tablaDetVentas">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="project_ferretech.DetalleVentasDAO.obtenerDetalleVentas()" type="code"/>
+                      <Connection code="project_ferretech.daos.DetalleVentasDAO.obtenerDetalleVentas()" type="code"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0"/>

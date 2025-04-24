@@ -1,59 +1,98 @@
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //INSERTAR
-    public static boolean insertarProducto(String nombre, String descripcion, double precio, int stock,
-            int idCategoria) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{call Pk_Procedimiento_Producto.INSERTAR_PRODUCTO(?, ?, ?, ?, ?)}")) {
-                //stmt.setInt(1, id);
-                stmt.setString(1, nombre);
-                stmt.setString(2, descripcion);
-                stmt.setDouble(3, precio);
-                stmt.setInt(4, stock);
-                stmt.setInt(5, idCategoria);
-                stmt.execute();
-                return true;
-            }
+
+public static void crearDetalleVenta(JFrame parentFrame, JTable tablaDetVentas) {
+    try {
+        int idVenta = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID de la venta:"));
+        int idProducto = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del producto:"));
+        int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Ingrese la cantidad:"));
+        double precioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el precio unitario:"));
+
+        try (Connection con = ConexionOracle.getConnection();
+             CallableStatement stmt = con.prepareCall("{CALL INSERTAR_DETALLE_VENTA(?, ?, ?, ?, ?)}")) {
+
+            stmt.setInt(1, obtenerNuevoID()); // Asegurate de tener este método disponible
+            stmt.setInt(2, idVenta);
+            stmt.setInt(3, idProducto);
+            stmt.setInt(4, cantidad);
+            stmt.setDouble(5, precioUnitario);
+            stmt.execute();
+
+            JOptionPane.showMessageDialog(parentFrame, "Detalle de venta agregado.");
+            tablaDetVentas.setModel(obtenerDetalleVentas());
+
         } catch (SQLException e) {
-            System.err.println("Error al insertar producto: " + e.getMessage());
-            return false;
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentFrame, "Error al agregar el detalle de venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(parentFrame, "Entrada inválida. Por favor ingrese solo números.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+
+
+public static void editarDetalleVenta(JFrame parentFrame, JTable tablaDetVentas) {
+    int fila = tablaDetVentas.getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(parentFrame, "Seleccione un detalle de venta.");
+        return;
     }
 
-    public static void insertarProductoDesdeFormulario(JTable tablaProductos, Component parent) {
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
-        String descripcion = JOptionPane.showInputDialog("Ingrese descripción del producto:");
-        String precioStr = JOptionPane.showInputDialog("Ingrese el precio:");
-        String stockStr = JOptionPane.showInputDialog("Ingrese la cantidad en stock:");
-        String idCategoriaStr = JOptionPane.showInputDialog("Ingrese el ID de la categoría:");
+    try {
+        int id = (int) tablaDetVentas.getValueAt(fila, 0);
+        int nuevaCantidad = Integer.parseInt(JOptionPane.showInputDialog("Nueva cantidad:", tablaDetVentas.getValueAt(fila, 3)));
+        double nuevoPrecioUnitario = Double.parseDouble(JOptionPane.showInputDialog("Nuevo precio unitario:", tablaDetVentas.getValueAt(fila, 4)));
 
-        if (nombre != null && !nombre.trim().isEmpty()
-                && descripcion != null && !descripcion.trim().isEmpty()
-                && precioStr != null && !precioStr.trim().isEmpty()
-                && stockStr != null && !stockStr.trim().isEmpty()
-                && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
+        try (Connection con = ConexionOracle.getConnection();
+             CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_DETALLE_VENTA(?, ?, ?)}")) {
 
-            try {
-                double precio = Double.parseDouble(precioStr);
-                int stock = Integer.parseInt(stockStr);
-                int idCategoria = Integer.parseInt(idCategoriaStr);
+            stmt.setInt(1, id);
+            stmt.setInt(2, nuevaCantidad);
+            stmt.setDouble(3, nuevoPrecioUnitario);
+            stmt.execute();
 
-                boolean exito = insertarProducto(nombre, descripcion, precio, stock, idCategoria);
+            JOptionPane.showMessageDialog(parentFrame, "Detalle de venta actualizado.");
+            tablaDetVentas.setModel(obtenerDetalleVentas());
 
-                if (exito) {
-                    JOptionPane.showMessageDialog(parent, "Producto agregado con éxito.");
-                    tablaProductos.setModel(obtenerProductos());
-                } else {
-                    JOptionPane.showMessageDialog(parent, "Error al agregar el producto.");
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(parent, "Error: Ingrese datos numéricos válidos.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentFrame, "Error al actualizar el detalle de venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(parentFrame, "Entrada inválida. Ingrese solo números.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+
+
+
+public static void eliminarDetalleVenta(JFrame parentFrame, JTable tablaDetVentas) {
+    int fila = tablaDetVentas.getSelectedRow();
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(parentFrame, "Seleccione un detalle de venta.");
+        return;
+    }
+
+    int id = (int) tablaDetVentas.getValueAt(fila, 0);
+    int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este detalle de venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+        try (Connection con = ConexionOracle.getConnection();
+             CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_DETALLE_VENTA(?)}")) {
+
+            stmt.setInt(1, id);
+            stmt.execute();
+
+            JOptionPane.showMessageDialog(parentFrame, "Detalle de venta eliminado.");
+            tablaDetVentas.setModel(obtenerDetalleVentas());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentFrame, "Error al eliminar el detalle de venta: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+}
+
+
+     
