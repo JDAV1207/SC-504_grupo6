@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package project_ferretech.daos;
 
 import java.sql.*;
@@ -10,6 +6,7 @@ import oracle.jdbc.OracleTypes;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import javax.swing.JFrame;
 import project_ferretech.ConexionOracle;
 
 public class ProductoDAO {
@@ -52,43 +49,21 @@ public class ProductoDAO {
         }
         return modelo;
     }
-    
-        public static int obtenerNuevoID() {
-        int nuevoID = -1;
-        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_PRODUCTO) + 1 FROM PRODUCTOS"); ResultSet rs = stmt.executeQuery()) {
+
+    private static int obtenerNuevoID() {
+        int nuevoID = 1;
+        try (Connection con = ConexionOracle.getConnection(); Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery("SELECT NVL(MAX(ID_PRODUCTO), 0) + 1 FROM PRODUCTOS")) {
             if (rs.next()) {
                 nuevoID = rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener nuevo ID de PRODUCTOS: " + e.getMessage());
+            e.printStackTrace();
         }
-        return nuevoID;}
-
-    //INSERTAR
-    public static boolean insertarProducto(String nombre, String descripcion, int precio, int stock,
-            int idCategoria) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{call  Pk_Procedimiento_Producto.INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
-                stmt.setInt(1,  obtenerNuevoID());
-                stmt.setString(2, nombre);
-                stmt.setString(3, descripcion);
-                stmt.setInt(4, precio);
-                stmt.setInt(5, stock);
-                stmt.setInt(6, idCategoria);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al insertar producto: " + e.getMessage());
-            return false;
-        }
+        return nuevoID;
     }
 
-    public static void insertarProductoDesdeFormulario(JTable tablaProductos, Component parent) {
+    //INSERTAR
+    public static void crearProducto(JFrame parentFrame, JTable tablaProducto) {
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
         String descripcion = JOptionPane.showInputDialog("Ingrese descripción del producto:");
         String precioStr = JOptionPane.showInputDialog("Ingrese el precio:");
@@ -101,54 +76,33 @@ public class ProductoDAO {
                 && stockStr != null && !stockStr.trim().isEmpty()
                 && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
 
-            try {
-                int precio = Integer.parseInt(precioStr);
-                int stock = Integer.parseInt(stockStr);
-                int idCategoria = Integer.parseInt(idCategoriaStr);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
 
-                boolean exito = insertarProducto(nombre, descripcion, precio, stock, idCategoria);
+                stmt.setInt(1, obtenerNuevoID());
+                stmt.setString(2, nombre);
+                stmt.setString(3, descripcion);
+                stmt.setDouble(4, Double.parseDouble(precioStr));
+                stmt.setInt(5, Integer.parseInt(stockStr));
+                stmt.setInt(6, Integer.parseInt(idCategoriaStr));
+                stmt.execute();
 
-                if (exito) {
-                    JOptionPane.showMessageDialog(parent, "Producto agregado con éxito.");
-                    tablaProductos.setModel(obtenerProductos());
-                } else {
-                    JOptionPane.showMessageDialog(parent, "Error al agregar el producto.");
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(parent, "Error: Ingrese datos numéricos válidos.");
+                JOptionPane.showMessageDialog(parentFrame, "Producto agregado correctamente.");
+                tablaProducto.setModel(obtenerProductos());
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al agregar el producto.");
             }
         } else {
-            JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos.");
+            JOptionPane.showMessageDialog(parentFrame, "Por favor, complete todos los espacios.");
         }
     }
 
     //EDITAR
-    public static boolean actualizarProducto(int id, String nombre, String descripcion, double precio, int stock, int idCategoria) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
-                stmt.setInt(1, id);
-                stmt.setString(2, nombre);
-                stmt.setString(3, descripcion);
-                stmt.setDouble(4, precio);
-                stmt.setInt(5, stock);
-                stmt.setInt(6, idCategoria);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar el producto: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static void actualizarProductoDesdeTabla(JTable tablaProducto, Component parent) {
+    public static void editarProducto(JFrame parentFrame, JTable tablaProducto) {
         int fila = tablaProducto.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(parent, "Seleccione un producto.");
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione un producto.");
             return;
         }
 
@@ -165,65 +119,52 @@ public class ProductoDAO {
                 && nuevoStockStr != null && !nuevoStockStr.trim().isEmpty()
                 && nuevaCategoriaStr != null && !nuevaCategoriaStr.trim().isEmpty()) {
 
-            try {
-                double precio = Double.parseDouble(nuevoPrecioStr);
-                int stock = Integer.parseInt(nuevoStockStr);
-                int idCategoria = Integer.parseInt(nuevaCategoriaStr);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
 
-                boolean exito = actualizarProducto(id, nuevoNombre, nuevaDescripcion, precio, stock, idCategoria);
+                stmt.setInt(1, id);
+                stmt.setString(2, nuevoNombre);
+                stmt.setString(3, nuevaDescripcion);
+                stmt.setDouble(4, Double.parseDouble(nuevoPrecioStr));
+                stmt.setInt(5, Integer.parseInt(nuevoStockStr));
+                stmt.setInt(6, Integer.parseInt(nuevaCategoriaStr));
+                stmt.execute();
 
-                if (exito) {
-                    JOptionPane.showMessageDialog(parent, "Producto actualizado con éxito.");
-                    tablaProducto.setModel(obtenerProductos());
-                } else {
-                    JOptionPane.showMessageDialog(parent, "Error al actualizar el producto.");
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(parent, "Ingrese datos válidos.");
+                JOptionPane.showMessageDialog(parentFrame, "Producto actualizado.");
+                tablaProducto.setModel(obtenerProductos()); // Actualizar tabla
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al actualizar el producto.");
             }
         } else {
-            JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos.");
+            JOptionPane.showMessageDialog(parentFrame, "Por favor, complete todos los campos.");
         }
     }
 
     //ELIMINAR
-    public static boolean eliminarProducto(int id) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.ELIMINAR_PRODUCTO(?)}")) {
-                stmt.setInt(1, id);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar el producto: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static void eliminarProductoDesdeTabla(JTable tablaProducto, Component parent) {
+    public static void eliminarProducto(JFrame parentFrame, JTable tablaProducto) {
         int fila = tablaProducto.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(parent, "Seleccione un producto.");
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione un producto.");
             return;
         }
 
         int id = (int) tablaProducto.getValueAt(fila, 0);
-        int confirm = JOptionPane.showConfirmDialog(parent, "¿Seguro que desea eliminar este producto?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este producto?", "Confirmar", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean exito = eliminarProducto(id);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PRODUCTO(?)}")) {
 
-            if (exito) {
-                JOptionPane.showMessageDialog(parent, "Producto eliminado correctamente.");
-                tablaProducto.setModel(obtenerProductos());
-            } else {
-                JOptionPane.showMessageDialog(parent, "Error al eliminar el producto.");
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(parentFrame, "Producto eliminado correctamente.");
+                tablaProducto.setModel(obtenerProductos()); // Actualizar tabla
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al eliminar el producto.");
             }
         }
-
     }
 }

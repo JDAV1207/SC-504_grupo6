@@ -6,6 +6,7 @@ import oracle.jdbc.OracleTypes;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import javax.swing.JFrame;
 import project_ferretech.ConexionOracle;
 
 public class CategoriaDAO {
@@ -29,142 +30,88 @@ public class CategoriaDAO {
         return modelo;
     }
 
-    public static int obtenerNuevoID() {
-        int nuevoID = -1;
-        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_CATEGORIA) + 1 FROM CATEGORIAS"); ResultSet rs = stmt.executeQuery()) {
+    private static int obtenerNuevoID() {
+        int nuevoID = 1;
+        try (Connection con = ConexionOracle.getConnection(); Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery("SELECT NVL(MAX(ID_CATEGORIA), 0) + 1 FROM CATEGORIAS")) {
             if (rs.next()) {
                 nuevoID = rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener nuevo ID de categoría: " + e.getMessage());
+            e.printStackTrace();
         }
         return nuevoID;
     }
 
 //ELIMINAR CATEGORIA
-    public static boolean eliminarCategoria(int id) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-
-            try (CallableStatement stmt = con.prepareCall("{call ELIMINAR_CATEGORIA(?)}")) {
-                stmt.setInt(1, id);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar categoría: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static void eliminarCategoriaDesdeTabla(JTable tablaCategorias, Component parentComponent) {
+    public static void eliminarCategoria(JFrame parentFrame, JTable tablaCategorias) {
         int fila = tablaCategorias.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(parentComponent, "Seleccione una categoría.");
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione una categoría.");
             return;
         }
 
         int id = (int) tablaCategorias.getValueAt(fila, 0);
 
-        int confirm = JOptionPane.showConfirmDialog(
-                parentComponent,
-                "¿Está seguro que desea eliminar esta categoría?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION
-        );
-
+        int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean eliminada = eliminarCategoria(id);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
 
-            if (eliminada) {
-                JOptionPane.showMessageDialog(parentComponent, "Categoría eliminada correctamente.");
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(parentFrame, "Categoría eliminada.");
                 tablaCategorias.setModel(obtenerCategorias());
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Error al eliminar la categoría.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al eliminar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
 //ACTUALIZAR CATEGORIA
-    public static boolean actualizarCategoria(int id, String nuevoNombre) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{call Pk_Procedimiento_Categoria.ACTUALIZAR_CATEGORIA(?, ?)}")) {
-                stmt.setInt(1, id);
-                stmt.setString(2, nuevoNombre);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar categoría: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static void actualizarCategoriaDesdeTabla(JTable tablaCategorias, Component parentComponent) {
+    public static void editarCategoria(JFrame parentFrame, JTable tablaCategorias) {
         int fila = tablaCategorias.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(parentComponent, "Seleccione una categoría.");
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione una categoría.");
             return;
         }
 
         int id = (int) tablaCategorias.getValueAt(fila, 0);
-        String nuevoNombre = JOptionPane.showInputDialog(parentComponent, "Nuevo nombre:", tablaCategorias.getValueAt(fila, 1));
+        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaCategorias.getValueAt(fila, 1));
 
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-            boolean actualizada = actualizarCategoria(id, nuevoNombre);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_CATEGORIA(?,?)}")) {
 
-            if (actualizada) {
-                JOptionPane.showMessageDialog(parentComponent, "Categoría actualizada correctamente.");
-                tablaCategorias.setModel(obtenerCategorias());
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Error al actualizar la categoría.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(parentComponent, "El nombre no puede estar vacío.");
-        }
-    }
-
-    //Crear CATEGORIA
-    public static boolean insertarCategoria(int id, String nombre) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{call Pk_Procedimiento_Categoria.INSERTAR_CATEGORIA(?, ?)}")) {
                 stmt.setInt(1, id);
-                stmt.setString(2, nombre);
+                stmt.setString(2, nuevoNombre);
                 stmt.execute();
-                return true;
+
+                JOptionPane.showMessageDialog(parentFrame, "Categoría actualizada.");
+                tablaCategorias.setModel(obtenerCategorias());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al actualizar la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (SQLException e) {
-            System.err.println("Error al insertar la categoría: " + e.getMessage());
-            return false;
         }
     }
 
-    public static void crearCategoriaDesdeInput(JTable tablaCategorias, Component parentComponent) {
-        String nombre = JOptionPane.showInputDialog(parentComponent, "Ingrese el nombre de la categoría:");
+//CREAR CATEGORIA
+    public static void crearCategoria(JFrame parentFrame, JTable tablaCategorias) {
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la categoría:");
 
         if (nombre != null && !nombre.trim().isEmpty()) {
-            int id = obtenerNuevoID();
-            boolean creada = insertarCategoria(id, nombre);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CATEGORIA(?,?)}")) {
 
-            if (creada) {
-                JOptionPane.showMessageDialog(parentComponent, "Categoría creada correctamente.");
+                stmt.setInt(1, obtenerNuevoID()); // Asegúrate de que este método esté accesible aquí
+                stmt.setString(2, nombre);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(parentFrame, "Categoría creada.");
                 tablaCategorias.setModel(obtenerCategorias());
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Error al crear la categoría.");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al crear la categoría: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(parentComponent, "El nombre no puede estar vacío.");
         }
     }
 

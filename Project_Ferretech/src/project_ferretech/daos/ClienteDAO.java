@@ -133,30 +133,28 @@ public class ClienteDAO {
 
     //ELIMINAR CLIENTE
     public static void eliminarCliente(JFrame parentFrame, JTable tablaClientes) {
-    int fila = tablaClientes.getSelectedRow();
-    if (fila == -1) {
-        JOptionPane.showMessageDialog(parentFrame, "Seleccione un cliente.");
-        return;
-    }
+        int fila = tablaClientes.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione un cliente.");
+            return;
+        }
 
-    int id = (int) tablaClientes.getValueAt(fila, 0);
+        int id = (int) tablaClientes.getValueAt(fila, 0);
 
-    int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
-    if (confirm == JOptionPane.YES_OPTION) {
-        try (Connection con = ConexionOracle.getConnection();
-             CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CLIENTE(?)}")) {
+        int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CLIENTE(?)}")) {
 
-            stmt.setInt(1, id);
-            stmt.execute();
+                stmt.setInt(1, id);
+                stmt.execute();
 
-            JOptionPane.showMessageDialog(parentFrame, "Cliente eliminado.");
-            tablaClientes.setModel(obtenerClientes());
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(parentFrame, "Error al eliminar cliente: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(parentFrame, "Cliente eliminado.");
+                tablaClientes.setModel(obtenerClientes());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al eliminar cliente: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
-}
-
 
 }

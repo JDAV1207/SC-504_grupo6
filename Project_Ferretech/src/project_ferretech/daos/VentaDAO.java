@@ -6,6 +6,7 @@ import oracle.jdbc.OracleTypes;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import javax.swing.JFrame;
 import project_ferretech.ConexionOracle;
 
 public class VentaDAO {
@@ -40,124 +41,117 @@ public class VentaDAO {
 
     public static int obtenerNuevoID() {
         int nuevoID = -1;
-        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_PRODUCTO) + 1 FROM PRODUCTOS"); ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = ConexionOracle.getConnection(); PreparedStatement stmt = con.prepareStatement("SELECT MAX(ID_VENTA) + 1 FROM VENTAS"); ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 nuevoID = rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener nuevo ID de PRODUCTOS: " + e.getMessage());
+            System.err.println("Error al obtener nuevo ID de VENTAS: " + e.getMessage());
         }
         return nuevoID;
     }
 
     //Crear VENTA
-    public static void insertarVenta(int idVenta, int idCliente, int idEmpleado, String fechaVenta, double total) throws SQLException {
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
+    public static void crearVenta(JFrame parentFrame, JTable tablaVentas) {
+        int idCliente;
+        int idEmpleado;
+        String fechaVenta;
+        double total;
 
-            stmt.setInt(1, idVenta);
-            stmt.setInt(2, idCliente);
-            stmt.setInt(3, idEmpleado);
-            stmt.setDate(4, Date.valueOf(fechaVenta));
-            stmt.setDouble(5, total);
-            stmt.execute();
-        }
-    }
-
-    public static void crearVentaDesdeFormulario(JTable tablaVentas, Component parent) {
         try {
-            int idCliente = Integer.parseInt(JOptionPane.showInputDialog(parent, "Ingrese el ID del cliente al que se le realizó la venta:"));
-            int idEmpleado = Integer.parseInt(JOptionPane.showInputDialog(parent, "Ingrese el ID del empleado que realizó la venta:"));
-            String fechaVenta = JOptionPane.showInputDialog(parent, "Ingrese la fecha de la venta (YYYY-MM-DD):");
-            double total = Double.parseDouble(JOptionPane.showInputDialog(parent, "Ingrese el total de la venta:"));
+            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del cliente al que se le realizó la venta:"));
+            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el ID del empleado que realizó la venta:"));
+            fechaVenta = JOptionPane.showInputDialog("Ingrese la fecha de la venta (YYYY-MM-DD):");
+            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el total de la venta:"));
 
             if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
-                int nuevoID = obtenerNuevoID();
-                insertarVenta(nuevoID, idCliente, idEmpleado, fechaVenta, total);
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
 
-                tablaVentas.setModel(obtenerVentas());
-                JOptionPane.showMessageDialog(parent, "Venta registrada.");
-            } else {
-                JOptionPane.showMessageDialog(parent, "Debe completar todos los campos.");
+                    stmt.setInt(1, obtenerNuevoID()); // Asegúrate de que este método sea accesible aquí
+                    stmt.setInt(2, idCliente);
+                    stmt.setInt(3, idEmpleado);
+                    stmt.setDate(4, Date.valueOf(fechaVenta));
+                    stmt.setDouble(5, total);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(parentFrame, "Venta registrada.");
+                    tablaVentas.setModel(obtenerVentas());
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(parentFrame, "Error al registrar la venta.");
+                }
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(parent, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(parent, "Error al registrar la venta.");
+            JOptionPane.showMessageDialog(parentFrame, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     //Actualizar VENTA
-    public static void actualizarVenta(int idVenta, int idCliente, int idEmpleado, String fechaVenta, double total) throws SQLException {
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
-
-            stmt.setInt(1, idVenta);
-            stmt.setInt(2, idCliente);
-            stmt.setInt(3, idEmpleado);
-            stmt.setDate(4, Date.valueOf(fechaVenta));
-            stmt.setDouble(5, total);
-            stmt.execute();
+    public static void editarVenta(JFrame parentFrame, JTable tablaVentas) {
+        int fila = tablaVentas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione una venta.");
+            return;
         }
-    }
 
-    public static void actualizarVentaDesdeFormulario(JTable tablaVentas, Component parent) {
+        int id = (int) tablaVentas.getValueAt(fila, 0);
+        int idCliente;
+        int idEmpleado;
+        String fechaVenta;
+        double total;
+
         try {
-            int fila = tablaVentas.getSelectedRow();
-            if (fila == -1) {
-                JOptionPane.showMessageDialog(parent, "Seleccione una venta.");
-                return;
-            }
-
-            int idVenta = (int) tablaVentas.getValueAt(fila, 0);
-            int idCliente = Integer.parseInt(JOptionPane.showInputDialog(parent, "Ingrese el nuevo ID del cliente al que se le realizó la venta:", tablaVentas.getValueAt(fila, 1)));
-            int idEmpleado = Integer.parseInt(JOptionPane.showInputDialog(parent, "Ingrese el nuevo ID del empleado que realizó la venta:", tablaVentas.getValueAt(fila, 2)));
-            String fechaVenta = JOptionPane.showInputDialog(parent, "Ingrese la nueva fecha de la venta (YYYY-MM-DD):", tablaVentas.getValueAt(fila, 3));
-            double total = Double.parseDouble(JOptionPane.showInputDialog(parent, "Ingrese el nuevo total de la venta:", tablaVentas.getValueAt(fila, 4)));
+            idCliente = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo ID del cliente:", tablaVentas.getValueAt(fila, 1)));
+            idEmpleado = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el nuevo ID del empleado:", tablaVentas.getValueAt(fila, 2)));
+            fechaVenta = JOptionPane.showInputDialog("Ingrese la nueva fecha (YYYY-MM-DD):", tablaVentas.getValueAt(fila, 3));
+            total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el nuevo total:", tablaVentas.getValueAt(fila, 4)));
 
             if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
-                actualizarVenta(idVenta, idCliente, idEmpleado, fechaVenta, total);
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
 
-                tablaVentas.setModel(obtenerVentas());
-                JOptionPane.showMessageDialog(parent, "Venta actualizada.");
-            } else {
-                JOptionPane.showMessageDialog(parent, "Debe completar todos los campos.");
+                    stmt.setInt(1, id);
+                    stmt.setInt(2, idCliente);
+                    stmt.setInt(3, idEmpleado);
+                    stmt.setDate(4, Date.valueOf(fechaVenta));
+                    stmt.setDouble(5, total);
+                    stmt.execute();
+
+                    JOptionPane.showMessageDialog(parentFrame, "Venta actualizada.");
+                    tablaVentas.setModel(obtenerVentas());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(parentFrame, "Error al actualizar la venta.");
+                }
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(parent, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(parent, "Error al actualizar la venta.");
+            JOptionPane.showMessageDialog(parentFrame, "Error: Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     //eliminar VENTA
-    public static void eliminarVentaDesdeTabla(JTable tablaVentas, Component parent) {
-        try {
-            int fila = tablaVentas.getSelectedRow();
-            if (fila == -1) {
-                JOptionPane.showMessageDialog(parent, "Seleccione una venta.");
-                return;
-            }
-
-            int idVenta = (int) tablaVentas.getValueAt(fila, 0);
-
-            int confirm = JOptionPane.showConfirmDialog(parent, "¿Seguro que desea eliminar esta venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                eliminarVenta(idVenta);
-                tablaVentas.setModel(obtenerVentas());
-                JOptionPane.showMessageDialog(parent, "Venta eliminada.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(parent, "Error al eliminar la venta.");
+    public static void eliminarVenta(JFrame parentFrame, JTable tablaVentas) {
+        int fila = tablaVentas.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione una venta.");
+            return;
         }
-    }
 
-    public static void eliminarVenta(int idVenta) throws SQLException {
-        try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_venta.ELIMINAR_VENTA(?)}")) {
+        int id = (int) tablaVentas.getValueAt(fila, 0);
 
-            stmt.setInt(1, idVenta);
-            stmt.execute();
+        int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar esta venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_VENTA(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(parentFrame, "Venta eliminada.");
+                tablaVentas.setModel(obtenerVentas());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al eliminar la venta.");
+            }
         }
     }
 }

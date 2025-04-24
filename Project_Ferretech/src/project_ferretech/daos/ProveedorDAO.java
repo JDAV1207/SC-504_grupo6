@@ -3,6 +3,7 @@ package project_ferretech.daos;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import oracle.jdbc.OracleTypes;
@@ -46,98 +47,20 @@ public class ProveedorDAO {
         return modelo;
     }
 
-    //INSERTAR PROVEEDOR
-    public static boolean insertarProveedor(int id, String nombre, String telefono, String direccion, String correo) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión con la base de datos.");
-                return false;
-            }
-
-            try (CallableStatement stmt = con.prepareCall("{call INSERTAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
-                stmt.setInt(1, id);
-                stmt.setString(2, nombre);
-                stmt.setString(3, telefono);
-                stmt.setString(4, direccion);
-                stmt.setString(5, correo);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al insertar proveedor: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static int obtenerNuevoID() {
+    private static int obtenerNuevoID() {
+        int nuevoID = 1;
         try (Connection con = ConexionOracle.getConnection(); Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery("SELECT NVL(MAX(ID_PROVEEDOR), 0) + 1 FROM PROVEEDORES")) {
-
             if (rs.next()) {
-                return rs.getInt(1);
+                nuevoID = rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener nuevo ID de proveedor: " + e.getMessage());
+            e.printStackTrace();
         }
-        return 1;
+        return nuevoID;
     }
 
-    public static void crearProveedorDesdeFormulario(JTable tablaProveedor, Component parent) {
-        try {
-            String nombre = JOptionPane.showInputDialog(parent, "Nombre del proveedor:");
-            String telefono = JOptionPane.showInputDialog(parent, "Teléfono:");
-            String direccion = JOptionPane.showInputDialog(parent, "Dirección:");
-            String correo = JOptionPane.showInputDialog(parent, "Correo:");
-
-            if (nombre == null || telefono == null || direccion == null || correo == null
-                    || nombre.trim().isEmpty() || telefono.trim().isEmpty() || direccion.trim().isEmpty() || correo.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos.");
-                return;
-            }
-
-            int id = obtenerNuevoID();
-
-            if (insertarProveedor(id, nombre, telefono, direccion, correo)) {
-                JOptionPane.showMessageDialog(parent, "Proveedor agregado correctamente.");
-                tablaProveedor.setModel(obtenerProveedores());
-            } else {
-                JOptionPane.showMessageDialog(parent, "Error al agregar el proveedor.");
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(parent, "Datos inválidos o cancelados.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    //ACTUALIZAR PROVEEDOR
-    public static boolean actualizarProveedor(int id, String nombre, String telefono, String direccion, String correo) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-            try (CallableStatement stmt = con.prepareCall("{call ACTUALIZAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
-                stmt.setInt(1, id);
-                stmt.setString(2, nombre);
-                stmt.setString(3, telefono);
-                stmt.setString(4, direccion);
-                stmt.setString(5, correo);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al insertar proveedor: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static void actualizarProveedorDesdeTabla(JTable tablaProveedor, Component parentComponent) {
-        int fila = tablaProveedor.getSelectedRow();
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(parentComponent, "Seleccione un proveedor.");
-            return;
-        }
-
-        int id = (int) tablaProveedor.getValueAt(fila, 0);
+    //INSERTAR PROVEEDOR
+    public static void crearProveedor(JFrame parentFrame, JTable tablaProveedor) {
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre del proveedor:");
         String telefono = JOptionPane.showInputDialog("Ingrese el teléfono del proveedor:");
         String direccion = JOptionPane.showInputDialog("Ingrese la dirección del proveedor:");
@@ -148,64 +71,88 @@ public class ProveedorDAO {
                 && direccion != null && !direccion.trim().isEmpty()
                 && correo != null && !correo.trim().isEmpty()) {
 
-            boolean resultado = actualizarProveedor(id, nombre, telefono, direccion, correo);
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
 
-            if (resultado) {
-                JOptionPane.showMessageDialog(parentComponent, "Proveedor actualizado correctamente.");
+                stmt.setInt(1, obtenerNuevoID()); // Este método debe estar disponible en ProveedorDAO o llamarse de una clase utilitaria
+                stmt.setString(2, nombre);
+                stmt.setString(3, telefono);
+                stmt.setString(4, direccion);
+                stmt.setString(5, correo);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(parentFrame, "Proveedor agregado.");
                 tablaProveedor.setModel(obtenerProveedores());
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Error al actualizar el proveedor.");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al agregar el proveedor.");
             }
         } else {
-            JOptionPane.showMessageDialog(parentComponent, "Por favor, complete todos los campos.");
+            JOptionPane.showMessageDialog(parentFrame, "Por favor, complete todos los campos.");
         }
     }
 
-    //BOORAR PROVEEDOR
-    public static boolean eliminarProveedor(int id) {
-        try (Connection con = ConexionOracle.getConnection()) {
-            if (con == null) {
-                System.err.println("No se pudo establecer conexión.");
-                return false;
-            }
-
-            try (CallableStatement stmt = con.prepareCall("{call ELIMINAR_PROVEEDOR(?)}")) {
-                stmt.setInt(1, id);
-                stmt.execute();
-                return true;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar proveedor: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public static void eliminarProveedorDesdeTabla(JTable tablaProveedor, Component parentComponent) {
+    //ACTUALIZAR PROVEEDOR
+    public static void editarProveedor(JFrame parentFrame, JTable tablaProveedor) {
         int fila = tablaProveedor.getSelectedRow();
         if (fila == -1) {
-            JOptionPane.showMessageDialog(parentComponent, "Seleccione un proveedor.");
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione un proveedor.");
             return;
         }
 
         int id = (int) tablaProveedor.getValueAt(fila, 0);
+        String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaProveedor.getValueAt(fila, 1));
+        String nuevoTelefono = JOptionPane.showInputDialog("Nuevo teléfono:", tablaProveedor.getValueAt(fila, 2));
+        String nuevoDireccion = JOptionPane.showInputDialog("Nueva Dirección:", tablaProveedor.getValueAt(fila, 3));
+        String nuevoCorreo = JOptionPane.showInputDialog("Nuevo Correo:", tablaProveedor.getValueAt(fila, 4));
 
-        int confirm = JOptionPane.showConfirmDialog(
-                parentComponent,
-                "¿Está seguro que desea eliminar este proveedor?",
-                "Confirmar eliminación",
-                JOptionPane.YES_NO_OPTION
-        );
+        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty() && nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean eliminado = eliminarProveedor(id);
+                stmt.setInt(1, id);
+                stmt.setString(2, nuevoNombre);
+                stmt.setString(3, nuevoTelefono);
+                stmt.setString(4, nuevoDireccion);
+                stmt.setString(5, nuevoCorreo);
+                stmt.execute();
 
-            if (eliminado) {
-                JOptionPane.showMessageDialog(parentComponent, "Proveedor eliminado correctamente.");
+                JOptionPane.showMessageDialog(parentFrame, "Proveedor actualizado.");
                 tablaProveedor.setModel(obtenerProveedores());
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Error al eliminar el proveedor.");
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al actualizar el proveedor.");
             }
+        } else {
+            JOptionPane.showMessageDialog(parentFrame, "Por favor, complete al menos el nombre y teléfono.");
+        }
+    }
+
+    //BOORAR PROVEEDOR
+    public static void borrarProveedor(JFrame parentFrame, JTable tablaProveedor) {
+        int fila = tablaProveedor.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(parentFrame, "Seleccione un Proveedor.");
+            return;
         }
 
+        int id = (int) tablaProveedor.getValueAt(fila, 0);
+        int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PROVEEDOR(?)}")) {
+
+                stmt.setInt(1, id);
+                stmt.execute();
+
+                JOptionPane.showMessageDialog(parentFrame, "Proveedor eliminado.");
+                tablaProveedor.setModel(obtenerProveedores());
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(parentFrame, "Error al eliminar el proveedor.");
+            }
+        }
     }
+
 }

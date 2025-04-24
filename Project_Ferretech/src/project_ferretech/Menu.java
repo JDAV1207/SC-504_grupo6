@@ -73,12 +73,6 @@ public class Menu extends javax.swing.JFrame {
         CrearCategoria = new javax.swing.JButton();
         EditarCategoria = new javax.swing.JButton();
         BorrarCategoria = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        tablaProveedor = new javax.swing.JTable();
-        CrearProveedor = new javax.swing.JButton();
-        EditarProveedor = new javax.swing.JButton();
-        BorrarProveedor = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
         tablaProducto = new javax.swing.JTable();
@@ -91,6 +85,12 @@ public class Menu extends javax.swing.JFrame {
         CrearDetVentas = new javax.swing.JButton();
         EditarDetVentas = new javax.swing.JButton();
         EliminarDetVentas = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tablaProveedor = new javax.swing.JTable();
+        CrearProveedor = new javax.swing.JButton();
+        EditarProveedor = new javax.swing.JButton();
+        BorrarProveedor = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -391,65 +391,6 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Categorias", Categorias);
 
-        tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
-        jScrollPane6.setViewportView(tablaProveedor);
-
-        CrearProveedor.setText("Crear");
-        CrearProveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CrearProveedorActionPerformed(evt);
-            }
-        });
-
-        EditarProveedor.setText("Editar");
-        EditarProveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditarProveedorActionPerformed(evt);
-            }
-        });
-
-        BorrarProveedor.setText("Eliminar");
-        BorrarProveedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BorrarProveedorActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BorrarProveedor, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CrearProveedor)
-                            .addComponent(EditarProveedor))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(26, 26, 26))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(CrearProveedor)
-                        .addGap(18, 18, 18)
-                        .addComponent(EditarProveedor)
-                        .addGap(18, 18, 18)
-                        .addComponent(BorrarProveedor)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
-        jTabbedPane1.addTab("Proveedores", jPanel1);
-
         tablaProducto.setModel(ProductoDAO.obtenerProductos());
         jScrollPane7.setViewportView(tablaProducto);
 
@@ -566,6 +507,65 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Detalle Ventas", DetVentas);
 
+        tablaProveedor.setModel(ProveedorDAO.obtenerProveedores());
+        jScrollPane6.setViewportView(tablaProveedor);
+
+        CrearProveedor.setText("Crear");
+        CrearProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CrearProveedorActionPerformed(evt);
+            }
+        });
+
+        EditarProveedor.setText("Editar");
+        EditarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EditarProveedorActionPerformed(evt);
+            }
+        });
+
+        BorrarProveedor.setText("Eliminar");
+        BorrarProveedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BorrarProveedorActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BorrarProveedor, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(CrearProveedor)
+                            .addComponent(EditarProveedor))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 1, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(CrearProveedor)
+                        .addGap(18, 18, 18)
+                        .addComponent(EditarProveedor)
+                        .addGap(18, 18, 18)
+                        .addComponent(BorrarProveedor)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("Proveedores", jPanel1);
+
         jPanel4.setBackground(new java.awt.Color(255, 255, 102));
 
         jLabel1.setFont(new java.awt.Font("STIXGeneral", 0, 48)); // NOI18N
@@ -613,15 +613,15 @@ public class Menu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BorrarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarCategoriaActionPerformed
-        CategoriaDAO.eliminarCategoriaDesdeTabla(tablaCategorias, this);
+        CategoriaDAO.eliminarCategoria(this, tablaCategorias);
     }//GEN-LAST:event_BorrarCategoriaActionPerformed
 
     private void EditarCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarCategoriaActionPerformed
-        CategoriaDAO.actualizarCategoriaDesdeTabla(tablaCategorias, this);
+        CategoriaDAO.editarCategoria(this, tablaCategorias);
     }//GEN-LAST:event_EditarCategoriaActionPerformed
 
     private void CrearCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCategoriaActionPerformed
-        CategoriaDAO.crearCategoriaDesdeInput(tablaCategorias, this);
+        CategoriaDAO.crearCategoria(this, tablaCategorias);
     }//GEN-LAST:event_CrearCategoriaActionPerformed
 
     private void CrearCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearCompraActionPerformed
@@ -649,42 +649,42 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_EliminarClientesActionPerformed
 
     private void CrearVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearVentasActionPerformed
-        VentaDAO.crearVentaDesdeFormulario(tablaVentas, this);
+        VentaDAO.crearVenta(this, tablaVentas);
     }//GEN-LAST:event_CrearVentasActionPerformed
 
     private void EditarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarVentasActionPerformed
-        VentaDAO.actualizarVentaDesdeFormulario(tablaVentas, this);
+        VentaDAO.editarVenta(this, tablaVentas);
     }//GEN-LAST:event_EditarVentasActionPerformed
 
     private void BorrarVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarVentasActionPerformed
-        VentaDAO.eliminarVentaDesdeTabla(tablaVentas, this);
+        VentaDAO.eliminarVenta(this, tablaVentas);
     }//GEN-LAST:event_BorrarVentasActionPerformed
 
     private void CrearProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProveedorActionPerformed
-        ProveedorDAO.crearProveedorDesdeFormulario(tablaProveedor, this);
+        ProveedorDAO.crearProveedor(this, tablaProveedor);
     }//GEN-LAST:event_CrearProveedorActionPerformed
 
     private void EditarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProveedorActionPerformed
-        ProveedorDAO.actualizarProveedorDesdeTabla(tablaProveedor, this);
+        ProveedorDAO.editarProveedor(this, tablaProveedor);
     }//GEN-LAST:event_EditarProveedorActionPerformed
 
     private void BorrarProveedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProveedorActionPerformed
-        ProveedorDAO.eliminarProveedorDesdeTabla(tablaProveedor, this);
+        ProveedorDAO.borrarProveedor(this, tablaProveedor);
     }//GEN-LAST:event_BorrarProveedorActionPerformed
 
     private void CrearProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearProductoActionPerformed
         
-        ProductoDAO.insertarProductoDesdeFormulario(tablaProducto, this);
+        ProductoDAO.crearProducto(this, tablaProducto);
     }//GEN-LAST:event_CrearProductoActionPerformed
 
     private void EditarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditarProductoActionPerformed
         
-        ProductoDAO.actualizarProductoDesdeTabla(tablaProducto, this);
+        ProductoDAO.editarProducto(this, tablaProducto);
     }//GEN-LAST:event_EditarProductoActionPerformed
 
     private void BorrarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BorrarProductoActionPerformed
         
-        ProductoDAO.eliminarProductoDesdeTabla(tablaProducto, this);        
+        ProductoDAO.eliminarProducto(this, tablaProducto);
     }//GEN-LAST:event_BorrarProductoActionPerformed
 
     private void CrearDetVentasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CrearDetVentasActionPerformed
