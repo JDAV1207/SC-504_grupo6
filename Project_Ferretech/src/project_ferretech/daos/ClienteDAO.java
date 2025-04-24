@@ -110,7 +110,7 @@ public class ClienteDAO {
             correo = JOptionPane.showInputDialog("Ingrese el nuevo correo del cliente:", tablaClientes.getValueAt(fila, 4));
 
             if (nombre != null && !nombre.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_CLIENTE(?, ?, ?, ?, ?)}")) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Cliente.ACTUALIZAR_CLIENTE(?, ?, ?, ?, ?)}")) {
 
                     stmt.setInt(1, idCliente);
                     stmt.setString(2, nombre);
@@ -143,7 +143,7 @@ public class ClienteDAO {
 
         int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este cliente?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CLIENTE(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Cliente.ELIMINAR_CLIENTE(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();

@@ -54,7 +54,7 @@ public class CategoriaDAO {
 
         int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar esta categoría?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_CATEGORIA(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Categoria.ELIMINAR_CATEGORIA(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();
@@ -80,7 +80,7 @@ public class CategoriaDAO {
         String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", tablaCategorias.getValueAt(fila, 1));
 
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_CATEGORIA(?,?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Categoria.ACTUALIZAR_CATEGORIA(?,?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.setString(2, nuevoNombre);
@@ -100,7 +100,7 @@ public class CategoriaDAO {
         String nombre = JOptionPane.showInputDialog("Ingrese el nombre de la categoría:");
 
         if (nombre != null && !nombre.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_CATEGORIA(?,?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Categoria.INSERTAR_CATEGORIA(?,?)}")) {
 
                 stmt.setInt(1, obtenerNuevoID()); // Asegúrate de que este método esté accesible aquí
                 stmt.setString(2, nombre);

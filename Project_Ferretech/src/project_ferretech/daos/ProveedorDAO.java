@@ -71,7 +71,7 @@ public class ProveedorDAO {
                 && direccion != null && !direccion.trim().isEmpty()
                 && correo != null && !correo.trim().isEmpty()) {
 
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Proveedor.INSERTAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
 
                 stmt.setInt(1, obtenerNuevoID()); // Este método debe estar disponible en ProveedorDAO o llamarse de una clase utilitaria
                 stmt.setString(2, nombre);
@@ -107,7 +107,7 @@ public class ProveedorDAO {
         String nuevoCorreo = JOptionPane.showInputDialog("Nuevo Correo:", tablaProveedor.getValueAt(fila, 4));
 
         if (nuevoNombre != null && !nuevoNombre.trim().isEmpty() && nuevoTelefono != null && !nuevoTelefono.trim().isEmpty()) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Proveedor.ACTUALIZAR_PROVEEDOR(?, ?, ?, ?, ?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.setString(2, nuevoNombre);
@@ -140,7 +140,7 @@ public class ProveedorDAO {
         int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este proveedor?", "Confirmar", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PROVEEDOR(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Proveedor.ELIMINAR_PROVEEDOR(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();

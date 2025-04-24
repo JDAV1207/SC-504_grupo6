@@ -65,7 +65,7 @@ public class VentaDAO {
             total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el total de la venta:"));
 
             if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.INSERTAR_VENTA(?, ?, ?, ?, ?)}")) {
 
                     stmt.setInt(1, obtenerNuevoID()); // Asegúrate de que este método sea accesible aquí
                     stmt.setInt(2, idCliente);
@@ -108,7 +108,7 @@ public class VentaDAO {
             total = Double.parseDouble(JOptionPane.showInputDialog("Ingrese el nuevo total:", tablaVentas.getValueAt(fila, 4)));
 
             if (fechaVenta != null && !fechaVenta.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.ACTUALIZAR_VENTA(?, ?, ?, ?, ?)}")) {
 
                     stmt.setInt(1, id);
                     stmt.setInt(2, idCliente);
@@ -141,7 +141,7 @@ public class VentaDAO {
 
         int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar esta venta?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_VENTA(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Venta.ELIMINAR_VENTA(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();

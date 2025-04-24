@@ -109,7 +109,7 @@ public class EmpleadoDAO {
             correo = JOptionPane.showInputDialog(parentFrame, "Ingrese el nuevo correo del empleado:", tablaEmpleados.getValueAt(fila, 4));
 
             if (nombre != null && !nombre.trim().isEmpty()) {
-                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_EMPLEADO(?, ?, ?, ?, ?)}")) {
+                try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Empleado.ACTUALIZAR_EMPLEADO(?, ?, ?, ?, ?)}")) {
 
                     stmt.setInt(1, idEmpleado);
                     stmt.setString(2, nombre);
@@ -142,7 +142,7 @@ public class EmpleadoDAO {
 
         int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este empleado?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_EMPLEADO(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Empleado.ELIMINAR_EMPLEADO(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();

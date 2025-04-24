@@ -76,7 +76,7 @@ public class ProductoDAO {
                 && stockStr != null && !stockStr.trim().isEmpty()
                 && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
 
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.INSERTAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
 
                 stmt.setInt(1, obtenerNuevoID());
                 stmt.setString(2, nombre);
@@ -119,7 +119,7 @@ public class ProductoDAO {
                 && nuevoStockStr != null && !nuevoStockStr.trim().isEmpty()
                 && nuevaCategoriaStr != null && !nuevaCategoriaStr.trim().isEmpty()) {
 
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.ACTUALIZAR_PRODUCTO(?, ?, ?, ?, ?, ?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.setString(2, nuevoNombre);
@@ -153,7 +153,7 @@ public class ProductoDAO {
         int confirm = JOptionPane.showConfirmDialog(parentFrame, "¿Seguro que desea eliminar este producto?", "Confirmar", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL ELIMINAR_PRODUCTO(?)}")) {
+            try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL Pk_Procedimiento_Producto.ELIMINAR_PRODUCTO(?)}")) {
 
                 stmt.setInt(1, id);
                 stmt.execute();
