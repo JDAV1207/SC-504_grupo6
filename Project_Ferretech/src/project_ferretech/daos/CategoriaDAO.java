@@ -1,4 +1,4 @@
-package project_ferretech;
+package project_ferretech.daos;
 
 import java.sql.*;
 import javax.swing.table.DefaultTableModel;
@@ -6,6 +6,7 @@ import oracle.jdbc.OracleTypes;
 import javax.swing.JTable;
 import javax.swing.JOptionPane;
 import java.awt.Component;
+import project_ferretech.ConexionOracle;
 
 public class CategoriaDAO {
 

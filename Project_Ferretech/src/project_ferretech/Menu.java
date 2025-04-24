@@ -1,5 +1,6 @@
 package project_ferretech;
 
+import project_ferretech.daos.CategoriaDAO;
 import java.sql.*;
 import javax.swing.JOptionPane;
 import java.sql.Connection;
@@ -442,7 +443,7 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Proveedores", jPanel1);
 
-        tablaProducto.setModel(ProveedorDAO.obtenerProveedores());
+        tablaProducto.setModel(ProductoDAO.obtenerProductos());
         jScrollPane7.setViewportView(tablaProducto);
 
         CrearProducto.setText("Crear");

@@ -1,0 +1,59 @@
+
+
+    //INSERTAR
+    public static boolean insertarProducto(String nombre, String descripcion, double precio, int stock,
+            int idCategoria) {
+        try (Connection con = ConexionOracle.getConnection()) {
+            if (con == null) {
+                System.err.println("No se pudo establecer conexión.");
+                return false;
+            }
+            try (CallableStatement stmt = con.prepareCall("{call Pk_Procedimiento_Producto.INSERTAR_PRODUCTO(?, ?, ?, ?, ?)}")) {
+                //stmt.setInt(1, id);
+                stmt.setString(1, nombre);
+                stmt.setString(2, descripcion);
+                stmt.setDouble(3, precio);
+                stmt.setInt(4, stock);
+                stmt.setInt(5, idCategoria);
+                stmt.execute();
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al insertar producto: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static void insertarProductoDesdeFormulario(JTable tablaProductos, Component parent) {
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del producto:");
+        String descripcion = JOptionPane.showInputDialog("Ingrese descripción del producto:");
+        String precioStr = JOptionPane.showInputDialog("Ingrese el precio:");
+        String stockStr = JOptionPane.showInputDialog("Ingrese la cantidad en stock:");
+        String idCategoriaStr = JOptionPane.showInputDialog("Ingrese el ID de la categoría:");
+
+        if (nombre != null && !nombre.trim().isEmpty()
+                && descripcion != null && !descripcion.trim().isEmpty()
+                && precioStr != null && !precioStr.trim().isEmpty()
+                && stockStr != null && !stockStr.trim().isEmpty()
+                && idCategoriaStr != null && !idCategoriaStr.trim().isEmpty()) {
+
+            try {
+                double precio = Double.parseDouble(precioStr);
+                int stock = Integer.parseInt(stockStr);
+                int idCategoria = Integer.parseInt(idCategoriaStr);
+
+                boolean exito = insertarProducto(nombre, descripcion, precio, stock, idCategoria);
+
+                if (exito) {
+                    JOptionPane.showMessageDialog(parent, "Producto agregado con éxito.");
+                    tablaProductos.setModel(obtenerProductos());
+                } else {
+                    JOptionPane.showMessageDialog(parent, "Error al agregar el producto.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(parent, "Error: Ingrese datos numéricos válidos.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(parent, "Por favor, complete todos los campos.");
+        }
+    }
