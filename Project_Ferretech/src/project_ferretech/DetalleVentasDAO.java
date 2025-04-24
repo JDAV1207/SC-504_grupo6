@@ -12,7 +12,7 @@ public class DetalleVentasDAO {
         modelo.addColumn("ID Venta");
         modelo.addColumn("ID Producto");
         modelo.addColumn("Cantidad");
-        modelo.addColumn("Precio Unitario");
+        modelo.addColumn("Subtotal");
 
         try (Connection con = ConexionOracle.getConnection(); CallableStatement stmt = con.prepareCall("{CALL LISTAR_DETALLE_VENTA(?)}")) {
             stmt.registerOutParameter(1, OracleTypes.CURSOR);
@@ -25,7 +25,7 @@ public class DetalleVentasDAO {
                         rs.getInt("ID_VENTA"),
                         rs.getInt("ID_PRODUCTO"),
                         rs.getInt("CANTIDAD"),
-                        rs.getDouble("PRECIO_UNITARIO")
+                        rs.getDouble("SUBTOTAL")
                     });
                 }
             }
@@ -37,7 +37,7 @@ public class DetalleVentasDAO {
     }
 
     //CREAR DETALLE vENTAS
-    public static boolean insertarDetalleVenta(int idDetalle, int idVenta, int idProducto, int cantidad, double precioUnitario) {
+    public static boolean insertarDetalleVenta(int idDetalle, int idVenta, int idProducto, int cantidad, double subtotal) {
         try (Connection con = ConexionOracle.getConnection()) {
             if (con == null) {
                 System.err.println("No se pudo establecer conexión.");
@@ -48,7 +48,7 @@ public class DetalleVentasDAO {
                 stmt.setInt(2, idVenta);
                 stmt.setInt(3, idProducto);
                 stmt.setInt(4, cantidad);
-                stmt.setDouble(5, precioUnitario);
+                stmt.setDouble(5, subtotal);
                 stmt.execute();
                 return true;
             }
@@ -59,7 +59,7 @@ public class DetalleVentasDAO {
     }
 
     //EDITAR DETALLE vETNAS
-    public static boolean actualizarDetalleVenta(int idDetalle, int nuevaCantidad, double nuevoPrecioUnitario) {
+    public static boolean actualizarDetalleVenta(int idDetalle, int nuevaCantidad, double nuevoSubtotal) {
         try (Connection con = ConexionOracle.getConnection()) {
             if (con == null) {
                 System.err.println("No se pudo establecer conexión.");
@@ -68,7 +68,7 @@ public class DetalleVentasDAO {
             try (CallableStatement stmt = con.prepareCall("{call ACTUALIZAR_DETALLE_VENTA(?, ?, ?, ?, ?)}")) {
                 stmt.setInt(1, idDetalle);
                 stmt.setInt(2, nuevaCantidad);
-                stmt.setDouble(3, nuevoPrecioUnitario);
+                stmt.setDouble(3, nuevoSubtotal);
                 stmt.execute();
                 return true;
             }

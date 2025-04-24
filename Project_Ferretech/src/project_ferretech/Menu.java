@@ -502,7 +502,7 @@ public class Menu extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Productos", jPanel2);
 
-        tablaDetVentas.setModel(project_ferretech.ClienteDAO.obtenerClientes());
+        tablaDetVentas.setModel(project_ferretech.DetalleVentasDAO.obtenerDetalleVentas());
         tablaDetVentas.setName("FERRETECH"); // NOI18N
         jScrollPane8.setViewportView(tablaDetVentas);
 
